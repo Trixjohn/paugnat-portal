@@ -1,81 +1,43 @@
 document.addEventListener("DOMContentLoaded", function () {
     const leaderboard = document.getElementById("leaderboard");
 
-    function getBadgeColor(index) {
-        if (index === 0) return "bg-warning text-dark";
-        if (index === 1) return "bg-secondary";
-        if (index === 2) return "bg-danger";
-        return "bg-primary";
-    }
-
-    function getRank(index) {
-        if (index === 0) return "🥇";
-        if (index === 1) return "🥈";
-        if (index === 2) return "🥉";
-        return `${index + 1}.`;
-    }
-
-    function loadLeaderboard() {
-        fetch("php/get_colleges.php")
-            .then(response => response.json())
-            .then(colleges => {
-                leaderboard.innerHTML = "";
-
-                colleges.forEach((college, index) => {
-                    const li = document.createElement("li");
-                    li.className = "list-group-item d-flex justify-content-between align-items-center py-3";
-
-                    li.innerHTML = `
-                        <div>
-                            <span class="fw-bold">${getRank(index)} ${college.name}</span>
-                            <div class="mt-2">
-                                <button class="btn btn-sm btn-success add10">+10</button>
-                                <button class="btn btn-sm btn-dark add50">+50</button>
-                            </div>
-                        </div>
-
-                        <span class="badge ${getBadgeColor(index)} rounded-pill fs-6">
-                            ${college.points} pts
-                        </span>
-                    `;
-
-                    li.querySelector(".add10").addEventListener("click", () => {
-                        updatePoints(college.id, 10);
-                    });
-
-                    li.querySelector(".add50").addEventListener("click", () => {
-                        updatePoints(college.id, 50);
-                    });
-
-                    leaderboard.appendChild(li);
-                });
-            })
-            .catch(error => {
-                console.error("Error loading leaderboard:", error);
-            });
-    }
-
-    function updatePoints(id, points) {
-        const formData = new FormData();
-        formData.append("id", id);
-        formData.append("points", points);
-
-        fetch("php/update_points.php", {
-            method: "POST",
-            body: formData
-        })
+    fetch("backend/getColleges.php")
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                loadLeaderboard();
-            } else {
-                alert(data.message);
+            leaderboard.innerHTML = "";
+
+            data.forEach((college, index) => {
+                let rank = `${index + 1}.`;
+                let badgeClass = "bg-primary";
+
+                if (index === 0) {
+                    rank = "🥇";
+                    badgeClass = "bg-warning text-dark";
+                } else if (index === 1) {
+                    rank = "🥈";
+                    badgeClass = "bg-secondary";
+                } else if (index === 2) {
+                    rank = "🥉";
+                    badgeClass = "bg-danger";
+                }
+
+                const li = document.createElement("li");
+                li.className = "list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom";
+
+                li.innerHTML = `
+                    <span class="fw-bold">${rank} ${college.name}</span>
+                    <span class="badge ${badgeClass} rounded-pill">${college.points} pts</span>
+                `;
+
+                leaderboard.appendChild(li);
+            });
+
+            const lastItem = leaderboard.lastElementChild;
+            if (lastItem) {
+                lastItem.classList.remove("border-bottom");
             }
         })
         .catch(error => {
-            console.error("Error updating points:", error);
+            console.error("Error loading leaderboard:", error);
         });
-    }
-
-    loadLeaderboard();
 });
