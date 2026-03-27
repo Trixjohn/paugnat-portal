@@ -34,6 +34,7 @@ VALUES (
     '$2y$10$mJIOM72geqmZLoOlbGQDB.4Z9RqI02GArWnegTyOLNkwZ7U0UHuH6'
 );
 
+
 INSERT INTO colleges (name, points) VALUES
 ('College of Engineering', 150),
 ('College of Science', 120),
