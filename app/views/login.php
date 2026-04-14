@@ -19,7 +19,6 @@
 
                 <div class="col-md-6">
                     <div class="card shadow p-4">
-                        <h2 class="text-center mb-3">Admin Login</h2>
 
                         <?php if (isset($error) && $error): ?>
                             <div class="alert alert-danger"><?php echo $error; ?></div>
@@ -39,7 +38,7 @@
 
                         <hr>
 
-                        <a href="home.php" class="btn btn-secondary w-100">Continue as Guest</a>
+                        <a href="../index.php" class="btn btn-secondary w-100">Back to Home</a>
                     </div>
                 </div>
 

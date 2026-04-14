@@ -36,11 +36,12 @@ VALUES (
 
 
 INSERT INTO colleges (name, points) VALUES
-('College of Engineering', 150),
-('College of Science', 120),
-('College of Business', 100),
-('College of Education', 90),
-('College of Arts', 80);
+('College of Engineering and Architecture', 150),
+('College of Information Technology and Computing', 120),
+('College of Science and Mathematics', 100),
+('College of Science and Technology Education', 90),
+('College of Technology', 80),
+('College of Medicine', 70);
 
 INSERT INTO events (event_name, event_date) VALUES
 ('Basketball Championship', '2027-03-15'),

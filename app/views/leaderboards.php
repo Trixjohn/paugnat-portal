@@ -28,6 +28,7 @@
 
         <div class="w-100" style="max-width: 500px;">
             <ul class="list-group shadow-lg" id="leaderboard"></ul>
+            <div id="leaderboardMessage" class="text-center text-light opacity-75 mt-3"></div>
         </div>
 
         <div class="mt-5 w-100 py-3" style="max-width: 600px;">

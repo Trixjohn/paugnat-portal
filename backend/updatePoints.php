@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json");
-require_once '../app/models/Colleges.php';
+require_once __DIR__ . '/../app/models/Colleges.php';
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode([

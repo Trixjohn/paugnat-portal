@@ -15,6 +15,19 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             leaderboard.innerHTML = "";
+            const messageEl = document.getElementById("leaderboardMessage");
+            messageEl.textContent = "";
+
+            if (!data || data.error) {
+                const msg = data && data.message ? data.message : "No rankings available yet.";
+                messageEl.textContent = msg;
+                return;
+            }
+
+            if (!Array.isArray(data) || data.length === 0) {
+                messageEl.textContent = "No rankings available yet.";
+                return;
+            }
 
             data.forEach((college, index) => {
                 let rank = `${index + 1}.`;
@@ -43,6 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         })
         .catch(error => {
+            const messageEl = document.getElementById("leaderboardMessage");
+            messageEl.textContent = "Unable to load rankings. Please refresh the page.";
             console.error("Error loading leaderboard:", error);
         });
 });

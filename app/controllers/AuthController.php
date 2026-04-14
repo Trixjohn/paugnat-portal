@@ -19,7 +19,7 @@ class AuthController {
                 if ($admin) {
                     $_SESSION["admin_id"] = $admin["id"];
                     $_SESSION["admin_username"] = $admin["username"];
-                    header("Location: admin/dashboard.php");
+                    header("Location: dashboard.php");
                     exit();
                 } else {
                     $error = "Invalid credentials";
