@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS paugnat_db;
-USE paugnat_db;
 
 CREATE TABLE IF NOT EXISTS admins (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -15,8 +13,8 @@ CREATE TABLE IF NOT EXISTS colleges (
 
 CREATE TABLE IF NOT EXISTS events (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    event_name VARCHAR(100) NOT NULL,
-    event_date DATE NOT NULL
+    eventName VARCHAR(100) NOT NULL,
+    eventDate DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -25,7 +23,7 @@ CREATE TABLE IF NOT EXISTS messages (
     email VARCHAR(150) NOT NULL,
     message TEXT NOT NULL,
     status ENUM('new','read') NOT NULL DEFAULT 'new',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO admins (username, password)
@@ -41,7 +39,70 @@ INSERT INTO colleges (name, points) VALUES
 ('College of Education', 90),
 ('College of Arts', 80);
 
-INSERT INTO events (event_name, event_date) VALUES
+INSERT INTO events (eventName, eventDate) VALUES
 ('Basketball Championship', '2027-03-15'),
 ('E-Sports Tournament', '2027-03-16'),
 ('Mass Dance Competition', '2027-03-17');
+
+CREATE TABLE IF NOT EXISTS adminLogs (
+    logId INT AUTO_INCREMENT PRIMARY KEY,
+    adminId INT,
+    actionType ENUM('INSERT','UPDATE','DELETE') NOT NULL,
+    affectedTable VARCHAR(50) NOT NULL,
+    description TEXT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DELIMITER $$
+
+CREATE TRIGGER after_admin_insert
+AFTER INSERT ON admins
+FOR EACH ROW
+BEGIN
+    INSERT INTO adminLogs (adminId, actionType, affectedTable, description)
+    VALUES (
+        NEW.id,
+        'INSERT',
+        'admins',
+        CONCAT('New admin created: ', NEW.username)
+    );
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_admin_delete
+AFTER DELETE ON admins
+FOR EACH ROW
+BEGIN
+    INSERT INTO adminLogs (adminId, actionType, affectedTable, description)
+    VALUES (
+        OLD.id,
+        'DELETE',
+        'admins',
+        CONCAT('Admin deleted: ', OLD.username)
+    );
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_admin_update
+AFTER UPDATE ON admins
+FOR EACH ROW
+BEGIN
+    IF OLD.username <> NEW.username THEN
+        INSERT INTO adminLogs (adminId, actionType, affectedTable, description)
+        VALUES (NEW.id, 'UPDATE', 'admins', 'Username changed');
+    END IF;
+
+    IF OLD.password <> NEW.password THEN
+        INSERT INTO adminLogs (adminId, actionType, affectedTable, description)
+        VALUES (NEW.id, 'UPDATE', 'admins', 'Password changed');
+    END IF;
+
+END$$
+
+DELIMITER ;
