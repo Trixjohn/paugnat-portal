@@ -21,7 +21,7 @@ A web application for managing the USTP PAUGNAT 2027 events, including college l
    - Clone or download the project to `C:\xampp\htdocs\PAUGNAT`
    - Start XAMPP (Apache and MySQL)
    - Import the database: Run the SQL script in `database/paugnat.sql`
-   - Access the application at `http://localhost/PAUGNAT/home.php`
+   - Access the application at `http://localhost/PAUGNAT/index.php`
 
 3. **Default Admin Credentials**:
    - Username: `admin`

@@ -23,9 +23,13 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+
 --
 -- Table structure for table `adminLogs`
 --
+
+
+
 
 CREATE TABLE `adminLogs` (
   `logId` int(11) NOT NULL,

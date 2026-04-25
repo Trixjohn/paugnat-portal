@@ -26,8 +26,9 @@
 
         <h2 class="text-center mb-4 fw-bold text-ustp-gold mt-5 pt-5">🏆 Top Colleges</h2>
 
-        <div class="w-100" style="max-width: 400px;">
+        <div class="w-100" style="max-width: 500px;">
             <ul class="list-group shadow-lg" id="leaderboard"></ul>
+            <div id="leaderboardMessage" class="text-center text-light opacity-75 mt-3"></div>
         </div>
 
         <div class="mt-5 w-100 py-3" style="max-width: 600px;">
@@ -49,6 +50,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/leaderboards.js"></script>
+    <script src="../js/leaderboards.js?v=2"></script>
 </body>
 </html>

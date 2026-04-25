@@ -1,10 +1,33 @@
 document.addEventListener("DOMContentLoaded", function () {
     const leaderboard = document.getElementById("leaderboard");
 
-    fetch("backend/getColleges.php")
-        .then(response => response.json())
+    if (!leaderboard) {
+        console.error("Leaderboard not found");
+        return;
+    }
+
+    fetch("../backend/getColleges.php")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network error: " + response.status);
+            }
+            return response.json();
+        })
         .then(data => {
             leaderboard.innerHTML = "";
+            const messageEl = document.getElementById("leaderboardMessage");
+            messageEl.textContent = "";
+
+            if (!data || data.error) {
+                const msg = data && data.message ? data.message : "No rankings available yet.";
+                messageEl.textContent = msg;
+                return;
+            }
+
+            if (!Array.isArray(data) || data.length === 0) {
+                messageEl.textContent = "No rankings available yet.";
+                return;
+            }
 
             data.forEach((college, index) => {
                 let rank = `${index + 1}.`;
@@ -22,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 const li = document.createElement("li");
-                li.className = "list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom";
+                li.className = "list-group-item d-flex justify-content-between align-items-center";
 
                 li.innerHTML = `
                     <span class="fw-bold">${rank} ${college.name}</span>
@@ -31,13 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 leaderboard.appendChild(li);
             });
-
-            const lastItem = leaderboard.lastElementChild;
-            if (lastItem) {
-                lastItem.classList.remove("border-bottom");
-            }
         })
         .catch(error => {
+            const messageEl = document.getElementById("leaderboardMessage");
+            messageEl.textContent = "Unable to load rankings. Please refresh the page.";
             console.error("Error loading leaderboard:", error);
         });
 });
