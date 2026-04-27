@@ -8,15 +8,20 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="bg-dark text-white">
-    <nav class="navbar fixed-top  fw-bold text-dark bg-ustp-gold">
-        <div class="container">
-            <a href="../home.php" class="navbar-brand">PAUGNAT</a>
-            <div class="gap-5 d-flex">
-                <a href="../home.php" class="nav-link ">Home</a>
-                <a href="about.php" class="nav-link ">About</a>
-                <a href="events.php" class="nav-link ">Events</a>
-                <a href="leaderboards.php" class="nav-link ">Leaderboards</a>
-                <a href="contact.php" class="nav-link ">Contact</a>
+    <nav class="navbar navbar-expand-md fixed-top fw-bold navbar-custom shadow-sm">
+        <div class="container py-1">
+            <a href="../home.php" class="navbar-brand text-dark hover-glow fs-4">PAUGNAT</a>
+            <button class="navbar-toggler border-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+                <div class="navbar-nav gap-3 align-items-center mt-3 mt-md-0">
+                    <a href="../home.php" class="nav-link text-dark hover-glow">Home</a>
+                    <a href="about.php" class="nav-link text-dark hover-glow">About</a>
+                    <a href="events.php" class="nav-link text-dark hover-glow">Events</a>
+                    <a href="leaderboards.php" class="nav-link text-dark hover-glow">Leaderboards</a>
+                    <a href="contact.php" class="nav-link text-dark hover-glow">Contact</a>
+                </div>
             </div>
         </div>
     </nav>
