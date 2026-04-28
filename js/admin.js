@@ -53,9 +53,9 @@ function loadColleges() {
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${college.name}</td>
-                    <td>${college.points} pts</td>
+                    <td class="opacity-75">${index + 1}</td>
+                    <td class="fw-bold">${college.name}</td>
+                    <td class="text-end text-ustp-gold fw-bold">${college.points} pts</td>
                 `;
                 collegesTable.appendChild(row);
             });
@@ -92,9 +92,15 @@ function loadEvents() {
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
+<<<<<<< HEAD
                     <td>${event.id}</td>
                     <td>${event.eventName}</td>
                     <td>${event.eventDate}</td>
+=======
+                    <td class="opacity-75">${event.id}</td>
+                    <td class="fw-bold">${event.event_name}</td>
+                    <td class="text-end text-info">${event.event_date}</td>
+>>>>>>> upstream/main
                 `;
                 eventsTable.appendChild(row);
             });
@@ -110,6 +116,39 @@ function populateEventFields(eventId) {
     const selected = adminEvents.find(event => String(event.id) === String(eventId));
     document.getElementById("eventName").value = selected ? selected.event_name : "";
     document.getElementById("eventDate").value = selected ? selected.event_date : "";
+
+    const imageInput = document.getElementById("eventImage");
+    if (imageInput) imageInput.value = "";
+
+    const deleteBtn = document.getElementById("deleteEventBtn");
+    if (deleteBtn) deleteBtn.disabled = !eventId;
+}
+
+function deleteEvent() {
+    const eventId = document.getElementById("eventSelect").value;
+    if (!eventId || !confirm("Are you sure you want to delete this event?")) return;
+
+    const messageDiv = document.getElementById("eventMessage");
+    const formData = new FormData();
+    formData.append("id", eventId);
+
+    fetch("../backend/deleteEvent.php", { method: "POST", body: formData })
+        .then(response => response.json())
+        .then(data => {
+            messageDiv.className = data.success ? "alert alert-success mt-3" : "alert alert-danger mt-3";
+            messageDiv.textContent = data.message;
+            if (data.success) {
+                document.getElementById("eventForm").reset();
+                document.getElementById("eventSelect").value = "";
+                document.getElementById("deleteEventBtn").classList.add("d-none");
+                loadEvents();
+                setTimeout(() => location.reload(), 1200);
+            }
+        })
+        .catch(() => {
+            messageDiv.className = "alert alert-danger mt-3";
+            messageDiv.textContent = "An error occurred while deleting the event.";
+        });
 }
 
 function updatePoints() {
@@ -128,6 +167,7 @@ function updatePoints() {
         if (data.success) {
             document.getElementById("pointsForm").reset();
             loadColleges();
+            setTimeout(() => location.reload(), 1500);
         }
     })
     .catch(error => {
@@ -160,6 +200,7 @@ function updateEvent() {
             document.getElementById("eventForm").reset();
             eventSelect.value = "";
             loadEvents();
+            setTimeout(() => location.reload(), 1500);
         }
     })
     .catch(error => {
