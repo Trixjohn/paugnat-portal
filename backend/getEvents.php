@@ -9,7 +9,7 @@ $db->query("CREATE TABLE IF NOT EXISTS events (
     event_date DATE NOT NULL
 )");
 
-$result = $db->query("SELECT id, event_name, event_date FROM events ORDER BY event_date ASC");
+$result = $db->query("SELECT id, eventName, eventDate FROM events ORDER BY eventDate ASC");
 $events = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {

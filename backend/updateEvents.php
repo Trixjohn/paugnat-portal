@@ -24,7 +24,7 @@ if ($event_name === '' || $event_date === '') {
 }
 
 if ($id > 0) {
-    $stmt = $db->prepare('UPDATE events SET event_name = ?, event_date = ? WHERE id = ?');
+    $stmt = $db->prepare('UPDATE events SET eventName = ?, eventDate = ? WHERE id = ?');
     if (!$stmt) {
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $db->error]);
         exit;
@@ -35,7 +35,7 @@ if ($id > 0) {
     $stmt->close();
     $message = $success ? 'Event updated successfully.' : 'No changes were made.';
 } else {
-    $stmt = $db->prepare('INSERT INTO events (event_name, event_date) VALUES (?, ?)');
+    $stmt = $db->prepare('INSERT INTO events (eventName, eventDate) VALUES (?, ?)');
     if (!$stmt) {
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $db->error]);
         exit;
