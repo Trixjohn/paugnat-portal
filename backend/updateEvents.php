@@ -36,14 +36,26 @@ if ($event_name === '' || $event_date === '') {
 
 // Save or update the event
 if ($id > 0) {
-    $stmt = $db->prepare('UPDATE events SET event_name = ?, event_date = ? WHERE id = ?');
+
+    $stmt = $db->prepare('UPDATE events SET eventName = ?, eventDate = ? WHERE id = ?');
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $db->error]);
+        exit;
+    }
+
     $stmt->bind_param('ssi', $event_name, $event_date, $id);
     $stmt->execute();
     $success = $stmt->affected_rows >= 0;
     $stmt->close();
     $message = 'Event updated successfully.';
 } else {
-    $stmt = $db->prepare('INSERT INTO events (event_name, event_date) VALUES (?, ?)');
+
+    $stmt = $db->prepare('INSERT INTO events (eventName, eventDate) VALUES (?, ?)');
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $db->error]);
+        exit;
+    }
+
     $stmt->bind_param('ss', $event_name, $event_date);
     $success = $stmt->execute();
     $id = $db->insert_id;

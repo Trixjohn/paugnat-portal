@@ -87,14 +87,20 @@ function loadEvents() {
             adminEvents.forEach(event => {
                 const option = document.createElement("option");
                 option.value = event.id;
-                option.textContent = `${event.event_name} (${event.event_date})`;
+                option.textContent = `${event.eventName} (${event.eventDate})`;
                 eventSelect.appendChild(option);
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
+<<<<<<< HEAD
+                    <td>${event.id}</td>
+                    <td>${event.eventName}</td>
+                    <td>${event.eventDate}</td>
+=======
                     <td class="opacity-75">${event.id}</td>
                     <td class="fw-bold">${event.event_name}</td>
                     <td class="text-end text-info">${event.event_date}</td>
+>>>>>>> upstream/main
                 `;
                 eventsTable.appendChild(row);
             });

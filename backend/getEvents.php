@@ -10,9 +10,9 @@ $db->query("CREATE TABLE IF NOT EXISTS events (
     image_path VARCHAR(255) DEFAULT NULL
 )");
 
-try { @$db->query("ALTER TABLE events ADD COLUMN image_path VARCHAR(255) DEFAULT NULL"); } catch (Exception $e) {}
 
-$result = $db->query("SELECT id, event_name, event_date, image_path FROM events ORDER BY event_date ASC");
+$result = $db->query("SELECT id, eventName, eventDate FROM events ORDER BY eventDate ASC");
+
 $events = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {
