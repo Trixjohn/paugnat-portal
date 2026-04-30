@@ -1,211 +1,328 @@
-// Admin dashboard JavaScript
-let adminEvents = [];
+/**
+ * admin.js
+ * Manages all admin dashboard interactions:
+ *   - Loading and displaying colleges and events
+ *   - Updating college points with validation
+ *   - Creating, editing, and deleting events with validation
+ */
+
+/** @type {Array<{id: number, event_name: string, event_date: string}>} */
+let cachedEventsList = [];
+
+// ─── Initialisation ──────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", function () {
     loadColleges();
     loadEvents();
+    attachPointsFormListener();
+    attachEventFormListener();
+    attachEventSelectListener();
+});
 
+// ─── Event Listeners ─────────────────────────────────────────────────────────
+
+function attachPointsFormListener() {
     const pointsForm = document.getElementById("pointsForm");
     if (pointsForm) {
         pointsForm.addEventListener("submit", function (e) {
             e.preventDefault();
-            updatePoints();
+            handleUpdatePoints();
         });
     }
+}
 
+function attachEventFormListener() {
     const eventForm = document.getElementById("eventForm");
     if (eventForm) {
         eventForm.addEventListener("submit", function (e) {
             e.preventDefault();
-            updateEvent();
+            handleSaveEvent();
         });
     }
+}
 
+function attachEventSelectListener() {
     const eventSelect = document.getElementById("eventSelect");
     if (eventSelect) {
         eventSelect.addEventListener("change", function () {
             populateEventFields(this.value);
         });
     }
-});
+}
 
+// ─── Data Loading ─────────────────────────────────────────────────────────────
+
+/**
+ * Fetches colleges from the backend and populates the dropdown and standings table.
+ */
 function loadColleges() {
     fetch("../backend/getColleges.php")
-        .then(response => response.json())
-        .then(data => {
-            const collegeSelect = document.getElementById("collegeId");
-            const collegesTable = document.getElementById("collegesTable");
+        .then(function (response) {
+            if (!response.ok) throw new Error("Network error: " + response.status);
+            return response.json();
+        })
+        .then(function (collegesData) {
+            const collegeDropdown = document.getElementById("collegeId");
+            const collegeStandingsTable = document.getElementById("collegesTable");
 
-            if (!Array.isArray(data) || data.length === 0) {
-                collegeSelect.innerHTML = '<option value="">No colleges found</option>';
-                collegesTable.innerHTML = '<tr><td colspan="3">No colleges available.</td></tr>';
+            if (!Array.isArray(collegesData) || collegesData.length === 0) {
+                collegeDropdown.innerHTML = '<option value="">No colleges found</option>';
+                collegeStandingsTable.innerHTML = '<tr><td colspan="3" class="text-center opacity-75">No colleges available.</td></tr>';
                 return;
             }
 
-            collegeSelect.innerHTML = '<option value="">Select a college</option>';
-            collegesTable.innerHTML = "";
+            collegeDropdown.innerHTML = '<option value="">Select a college</option>';
+            collegeStandingsTable.innerHTML = "";
 
-            data.forEach((college, index) => {
-                const option = document.createElement("option");
-                option.value = college.id;
-                option.textContent = college.name;
-                collegeSelect.appendChild(option);
+            collegesData.forEach(function (college, rankIndex) {
+                // Populate the dropdown
+                const dropdownOption = document.createElement("option");
+                dropdownOption.value = college.id;
+                dropdownOption.textContent = college.name;
+                collegeDropdown.appendChild(dropdownOption);
 
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td class="opacity-75">${index + 1}</td>
+                // Populate the standings table
+                const tableRow = document.createElement("tr");
+                tableRow.innerHTML = `
+                    <td class="opacity-75">${rankIndex + 1}</td>
                     <td class="fw-bold">${college.name}</td>
                     <td class="text-end text-ustp-gold fw-bold">${college.points} pts</td>
                 `;
-                collegesTable.appendChild(row);
+                collegeStandingsTable.appendChild(tableRow);
             });
         })
-        .catch(error => {
-            console.error("Error loading colleges:", error);
+        .catch(function (fetchError) {
+            console.error("Error loading colleges:", fetchError);
             document.getElementById("collegeId").innerHTML = '<option value="">Error loading colleges</option>';
-            document.getElementById("collegesTable").innerHTML = '<tr><td colspan="3">Error loading colleges.</td></tr>';
+            document.getElementById("collegesTable").innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load colleges.</td></tr>';
         });
 }
 
+/**
+ * Fetches events from the backend and populates the event dropdown and upcoming events table.
+ */
 function loadEvents() {
     fetch("../backend/getEvents.php")
-        .then(response => response.json())
-        .then(data => {
-            const eventSelect = document.getElementById("eventSelect");
-            const eventsTable = document.getElementById("eventsTable");
+        .then(function (response) {
+            if (!response.ok) throw new Error("Network error: " + response.status);
+            return response.json();
+        })
+        .then(function (eventsData) {
+            const eventDropdown = document.getElementById("eventSelect");
+            const upcomingEventsTable = document.getElementById("eventsTable");
 
-            adminEvents = Array.isArray(data) ? data : [];
+            cachedEventsList = Array.isArray(eventsData) ? eventsData : [];
 
-            eventSelect.innerHTML = '<option value="">Create New Event</option>';
-            eventsTable.innerHTML = "";
+            eventDropdown.innerHTML = '<option value="">Create New Event</option>';
+            upcomingEventsTable.innerHTML = "";
 
-            if (adminEvents.length === 0) {
-                eventsTable.innerHTML = '<tr><td colspan="3">No events available.</td></tr>';
+            if (cachedEventsList.length === 0) {
+                upcomingEventsTable.innerHTML = '<tr><td colspan="3" class="text-center opacity-75">No events available.</td></tr>';
                 return;
             }
 
-            adminEvents.forEach(event => {
-                const option = document.createElement("option");
-                option.value = event.id;
-                option.textContent = `${event.eventName} (${event.eventDate})`;
-                eventSelect.appendChild(option);
+            cachedEventsList.forEach(function (event) {
+                // Populate the event selection dropdown
+                const dropdownOption = document.createElement("option");
+                dropdownOption.value = event.id;
+                dropdownOption.textContent = `${event.event_name} (${event.event_date})`;
+                eventDropdown.appendChild(dropdownOption);
 
-                const row = document.createElement("tr");
-                row.innerHTML = `
-<<<<<<< HEAD
-                    <td>${event.id}</td>
-                    <td>${event.eventName}</td>
-                    <td>${event.eventDate}</td>
-=======
+                // Populate the upcoming events table
+                const tableRow = document.createElement("tr");
+                tableRow.innerHTML = `
                     <td class="opacity-75">${event.id}</td>
                     <td class="fw-bold">${event.event_name}</td>
                     <td class="text-end text-info">${event.event_date}</td>
->>>>>>> upstream/main
                 `;
-                eventsTable.appendChild(row);
+                upcomingEventsTable.appendChild(tableRow);
             });
         })
-        .catch(error => {
-            console.error("Error loading events:", error);
+        .catch(function (fetchError) {
+            console.error("Error loading events:", fetchError);
             document.getElementById("eventSelect").innerHTML = '<option value="">Error loading events</option>';
-            document.getElementById("eventsTable").innerHTML = '<tr><td colspan="3">Error loading events.</td></tr>';
+            document.getElementById("eventsTable").innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load events.</td></tr>';
         });
 }
 
-function populateEventFields(eventId) {
-    const selected = adminEvents.find(event => String(event.id) === String(eventId));
-    document.getElementById("eventName").value = selected ? selected.event_name : "";
-    document.getElementById("eventDate").value = selected ? selected.event_date : "";
+// ─── Event Form Helpers ───────────────────────────────────────────────────────
 
-    const imageInput = document.getElementById("eventImage");
-    if (imageInput) imageInput.value = "";
+/**
+ * Fills the event name and date fields based on the selected event ID.
+ * Clears fields when "Create New Event" is selected (eventId is empty).
+ *
+ * @param {string} selectedEventId - The ID of the selected event, or "" for a new event.
+ */
+function populateEventFields(selectedEventId) {
+    const matchedEvent = cachedEventsList.find(function (event) {
+        return String(event.id) === String(selectedEventId);
+    });
 
-    const deleteBtn = document.getElementById("deleteEventBtn");
-    if (deleteBtn) deleteBtn.disabled = !eventId;
+    document.getElementById("eventName").value = matchedEvent ? matchedEvent.event_name : "";
+    document.getElementById("eventDate").value = matchedEvent ? matchedEvent.event_date : "";
+
+    const imageFileInput = document.getElementById("eventImage");
+    if (imageFileInput) imageFileInput.value = "";
+
+    const deleteEventButton = document.getElementById("deleteEventBtn");
+    if (deleteEventButton) deleteEventButton.disabled = !selectedEventId;
 }
 
-function deleteEvent() {
-    const eventId = document.getElementById("eventSelect").value;
-    if (!eventId || !confirm("Are you sure you want to delete this event?")) return;
+// ─── Action Handlers ──────────────────────────────────────────────────────────
 
-    const messageDiv = document.getElementById("eventMessage");
-    const formData = new FormData();
-    formData.append("id", eventId);
+/**
+ * Validates and submits the points update form.
+ * Requires a college to be selected and points to be a valid number.
+ */
+function handleUpdatePoints() {
+    const pointsMessageDiv = document.getElementById("pointsMessage");
+    const selectedCollegeId = document.getElementById("collegeId").value;
+    const pointsInput = document.getElementById("points");
+    const pointsValue = pointsInput.value.trim();
 
-    fetch("../backend/deleteEvent.php", { method: "POST", body: formData })
-        .then(response => response.json())
-        .then(data => {
-            messageDiv.className = data.success ? "alert alert-success mt-3" : "alert alert-danger mt-3";
-            messageDiv.textContent = data.message;
-            if (data.success) {
-                document.getElementById("eventForm").reset();
-                document.getElementById("eventSelect").value = "";
-                document.getElementById("deleteEventBtn").classList.add("d-none");
-                loadEvents();
-                setTimeout(() => location.reload(), 1200);
-            }
-        })
-        .catch(() => {
-            messageDiv.className = "alert alert-danger mt-3";
-            messageDiv.textContent = "An error occurred while deleting the event.";
-        });
-}
+    // Client-side validation
+    if (!selectedCollegeId) {
+        showFeedback(pointsMessageDiv, false, "Please select a college before updating points.");
+        return;
+    }
 
-function updatePoints() {
+    if (pointsValue === "" || isNaN(Number(pointsValue))) {
+        showFeedback(pointsMessageDiv, false, "Please enter a valid number for points.");
+        return;
+    }
+
     const formData = new FormData(document.getElementById("pointsForm"));
-    const messageDiv = document.getElementById("pointsMessage");
 
     fetch("../backend/updatePoints.php", {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        messageDiv.className = data.success ? "alert alert-success mt-3" : "alert alert-danger mt-3";
-        messageDiv.textContent = data.message;
+    .then(function (response) {
+        if (!response.ok) throw new Error("Network error: " + response.status);
+        return response.json();
+    })
+    .then(function (responseData) {
+        showFeedback(pointsMessageDiv, responseData.success, responseData.message);
 
-        if (data.success) {
+        if (responseData.success) {
             document.getElementById("pointsForm").reset();
             loadColleges();
-            setTimeout(() => location.reload(), 1500);
+            setTimeout(function () { location.reload(); }, 1500);
         }
     })
-    .catch(error => {
-        console.error("Error:", error);
-        messageDiv.className = "alert alert-danger mt-3";
-        messageDiv.textContent = "An error occurred while updating points.";
+    .catch(function (fetchError) {
+        console.error("Error updating points:", fetchError);
+        showFeedback(pointsMessageDiv, false, "An error occurred while updating points. Please try again.");
     });
 }
 
-function updateEvent() {
-    const eventSelect = document.getElementById("eventSelect");
-    const eventId = eventSelect.value;
-    const formData = new FormData(document.getElementById("eventForm"));
-    const messageDiv = document.getElementById("eventMessage");
+/**
+ * Validates and submits the event creation/update form.
+ * Requires a non-empty event name and a valid date.
+ */
+function handleSaveEvent() {
+    const eventMessageDiv = document.getElementById("eventMessage");
+    const eventNameInput = document.getElementById("eventName");
+    const eventDateInput = document.getElementById("eventDate");
+    const eventNameValue = eventNameInput.value.trim();
+    const eventDateValue = eventDateInput.value.trim();
 
-    if (eventId) {
-        formData.append("id", eventId);
+    // Client-side validation
+    if (!eventNameValue) {
+        showFeedback(eventMessageDiv, false, "Event name cannot be empty.");
+        eventNameInput.focus();
+        return;
+    }
+
+    if (!eventDateValue) {
+        showFeedback(eventMessageDiv, false, "Please select a valid event date.");
+        eventDateInput.focus();
+        return;
+    }
+
+    const eventDropdown = document.getElementById("eventSelect");
+    const selectedEventId = eventDropdown.value;
+    const formData = new FormData(document.getElementById("eventForm"));
+
+    if (selectedEventId) {
+        formData.append("id", selectedEventId);
     }
 
     fetch("../backend/updateEvents.php", {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        messageDiv.className = data.success ? "alert alert-success mt-3" : "alert alert-danger mt-3";
-        messageDiv.textContent = data.message;
+    .then(function (response) {
+        if (!response.ok) throw new Error("Network error: " + response.status);
+        return response.json();
+    })
+    .then(function (responseData) {
+        showFeedback(eventMessageDiv, responseData.success, responseData.message);
 
-        if (data.success) {
+        if (responseData.success) {
             document.getElementById("eventForm").reset();
-            eventSelect.value = "";
+            eventDropdown.value = "";
             loadEvents();
-            setTimeout(() => location.reload(), 1500);
+            setTimeout(function () { location.reload(); }, 1500);
         }
     })
-    .catch(error => {
-        console.error("Error:", error);
-        messageDiv.className = "alert alert-danger mt-3";
-        messageDiv.textContent = "An error occurred while saving the event.";
+    .catch(function (fetchError) {
+        console.error("Error saving event:", fetchError);
+        showFeedback(eventMessageDiv, false, "An error occurred while saving the event. Please try again.");
     });
+}
+
+/**
+ * Confirms and deletes the currently selected event.
+ * Called from the Delete Event button's onclick attribute.
+ */
+function deleteEvent() {
+    const selectedEventId = document.getElementById("eventSelect").value;
+
+    if (!selectedEventId) {
+        showFeedback(document.getElementById("eventMessage"), false, "No event selected for deletion.");
+        return;
+    }
+
+    const isConfirmed = confirm("Are you sure you want to delete this event? This action cannot be undone.");
+    if (!isConfirmed) return;
+
+    const eventMessageDiv = document.getElementById("eventMessage");
+    const deletePayload = new FormData();
+    deletePayload.append("id", selectedEventId);
+
+    fetch("../backend/deleteEvent.php", { method: "POST", body: deletePayload })
+        .then(function (response) {
+            if (!response.ok) throw new Error("Network error: " + response.status);
+            return response.json();
+        })
+        .then(function (responseData) {
+            showFeedback(eventMessageDiv, responseData.success, responseData.message);
+
+            if (responseData.success) {
+                document.getElementById("eventForm").reset();
+                document.getElementById("eventSelect").value = "";
+                document.getElementById("deleteEventBtn").disabled = true;
+                loadEvents();
+                setTimeout(function () { location.reload(); }, 1200);
+            }
+        })
+        .catch(function (fetchError) {
+            console.error("Error deleting event:", fetchError);
+            showFeedback(eventMessageDiv, false, "An error occurred while deleting the event. Please try again.");
+        });
+}
+
+// ─── Utility ─────────────────────────────────────────────────────────────────
+
+/**
+ * Displays a success or error alert inside a given container element.
+ *
+ * @param {HTMLElement} containerElement - The DOM element to render feedback into.
+ * @param {boolean}     isSuccess        - True for a success alert, false for danger.
+ * @param {string}      feedbackMessage  - The message text to display.
+ */
+function showFeedback(containerElement, isSuccess, feedbackMessage) {
+    const alertClass = isSuccess ? "alert-success" : "alert-danger";
+    containerElement.innerHTML = `<div class="alert ${alertClass} mt-3">${feedbackMessage}</div>`;
 }
