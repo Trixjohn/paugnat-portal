@@ -1,10 +1,10 @@
 <?php
-
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/mailconfig.php';
 require_once __DIR__ . '/../app/models/Database.php';
+require_once __DIR__ . '/../app/models/Messages.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -14,42 +14,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Input sanitization
-$name    = isset($_POST['name']) ? trim($_POST['name']) : '';
-$email   = isset($_POST['email']) ? trim($_POST['email']) : '';
-$message = isset($_POST['message']) ? trim($_POST['message']) : '';
+$name    = trim($_POST['name'] ?? '');
+$email   = trim($_POST['email'] ?? '');
+$message = trim($_POST['message'] ?? '');
 
-if (
-    $name === '' ||
-    $email === '' ||
-    $message === '' ||
-    !filter_var($email, FILTER_VALIDATE_EMAIL)
-) {
-    echo json_encode(['success' => false, 'message' => 'Please fill in all fields with valid data']);
+if ($name === '' || $email === '' || $message === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => 'Invalid input']);
     exit;
 }
 
-// ✅ Use YOUR database class (correct architecture)
-$db = Database::getInstance()->getConnection();
+/* DB SAVE */
+$msgModel = new Messages();
+$success = $msgModel->save($name, $email, $message);
 
-// Insert message
-$stmt = $db->prepare("INSERT INTO messages (name, email, message) VALUES (?, ?, ?)");
-
-if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Database prepare failed']);
-    exit;
-}
-
-$stmt->bind_param("sss", $name, $email, $message);
-
-if (!$stmt->execute()) {
+if (!$success) {
     echo json_encode(['success' => false, 'message' => 'Failed to save message']);
     exit;
 }
 
-$stmt->close();
-
-// Email sending (unchanged logic)
+/* EMAIL (UNCHANGED) */
 $mail = new PHPMailer(true);
 
 try {
@@ -73,12 +56,16 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => "Your message has been sent successfully."
+        'message' => 'Message sent successfully'
     ]);
 
 } catch (Exception $e) {
     echo json_encode([
-        'success' => false,
-        'message' => 'Message could not be sent. Please try again later.'
+        'success' => true,
+        'message' => 'Saved but email failed'
     ]);
 }
+
+exit;
+
+?>

@@ -9,7 +9,7 @@ class Colleges {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll() {
+    public function getAllColleges() {
 
         $sql = "SELECT id, name, points FROM colleges ORDER BY points DESC, name ASC";
         $result = $this->db->query($sql);
