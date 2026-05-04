@@ -21,29 +21,8 @@ $stats = [
     'top_points' => 0
 ];
 
-$conn->query("CREATE TABLE IF NOT EXISTS colleges (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    points INT DEFAULT 0
-)");
 
-$conn->query("CREATE TABLE IF NOT EXISTS events (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    event_name VARCHAR(100) NOT NULL,
-    event_date DATE NOT NULL,
-    image_path VARCHAR(255) DEFAULT NULL
-)");
 
-try { @$conn->query("ALTER TABLE events ADD COLUMN image_path VARCHAR(255) DEFAULT NULL"); } catch (Exception $e) {}
-
-$conn->query("CREATE TABLE IF NOT EXISTS messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL,
-    message TEXT NOT NULL,
-    status ENUM('new','read') NOT NULL DEFAULT 'new',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)");
 
 $result = $conn->query("SELECT COUNT(*) AS count FROM colleges");
 if ($result) {
@@ -151,11 +130,11 @@ if ($result && $result->num_rows === 1) {
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-light fw-bold">Event Name</label>
-                            <input type="text" name="event_name" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
+                            <input type="text" name="eventName" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-light fw-bold">Event Date</label>
-                            <input type="date" name="event_date" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
+                            <input type="date" name="eventDate" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label text-light fw-bold">Event Images (Optional)</label>
