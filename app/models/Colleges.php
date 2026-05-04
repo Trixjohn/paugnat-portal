@@ -30,6 +30,23 @@ class Colleges {
         $stmt->close();
         return $result;
     }
+
+    public function addCollege($name) {
+        $stmt = $this->db->prepare("INSERT INTO colleges (name, points) VALUES (?, 0)");
+        $stmt->bind_param("s", $name);
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
+    }
+
+    public function deleteCollege($id) {
+        $stmt = $this->db->prepare("DELETE FROM colleges WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $result = $stmt->execute();
+        $affected = $this->db->affected_rows;
+        $stmt->close();
+        return $result && $affected > 0;
+    }
 }
 
 ?>

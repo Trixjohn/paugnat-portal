@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
     loadColleges();
     loadEvents();
     attachPointsFormListener();
+    attachAddCollegeFormListener();
+    attachDeleteCollegeListener();
     attachEventFormListener();
     attachEventSelectListener();
 });
@@ -47,6 +49,23 @@ function attachEventSelectListener() {
         eventSelect.addEventListener("change", function () {
             populateEventFields(this.value);
         });
+    }
+}
+
+function attachAddCollegeFormListener() {
+    const form = document.getElementById("addCollegeForm");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            handleAddCollege();
+        });
+    }
+}
+
+function attachDeleteCollegeListener() {
+    const btn = document.getElementById("deleteCollegeBtn");
+    if (btn) {
+        btn.addEventListener("click", handleDeleteCollege);
     }
 }
 
@@ -310,6 +329,67 @@ function deleteEvent() {
         .catch(function (fetchError) {
             console.error("Error deleting event:", fetchError);
             showFeedback(eventMessageDiv, false, "An error occurred while deleting the event. Please try again.");
+        });
+}
+
+// ─── College Action Handlers ──────────────────────────────────────────────────
+
+function handleAddCollege() {
+    const messageDiv = document.getElementById("collegeMessage");
+    const nameInput  = document.getElementById("collegeName");
+    const name = nameInput.value.trim();
+
+    if (!name) {
+        showFeedback(messageDiv, false, "College name cannot be empty.");
+        nameInput.focus();
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("college_name", name);
+
+    fetch("../backend/addCollege.php", { method: "POST", body: formData })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+            showFeedback(messageDiv, data.success, data.message);
+            if (data.success) {
+                document.getElementById("addCollegeForm").reset();
+                loadColleges();
+                setTimeout(function () { location.reload(); }, 1500);
+            }
+        })
+        .catch(function (err) {
+            console.error("Add college error:", err);
+            showFeedback(messageDiv, false, "An error occurred while adding the college.");
+        });
+}
+
+function handleDeleteCollege() {
+    const messageDiv = document.getElementById("collegeMessage");
+    const selectedId = document.getElementById("collegeId").value;
+
+    if (!selectedId) {
+        showFeedback(messageDiv, false, "Please select a college to delete.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this college? This cannot be undone.")) return;
+
+    const formData = new FormData();
+    formData.append("id", selectedId);
+
+    fetch("../backend/deleteCollege.php", { method: "POST", body: formData })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+            showFeedback(messageDiv, data.success, data.message);
+            if (data.success) {
+                loadColleges();
+                setTimeout(function () { location.reload(); }, 1200);
+            }
+        })
+        .catch(function (err) {
+            console.error("Delete college error:", err);
+            showFeedback(messageDiv, false, "An error occurred while deleting the college.");
         });
 }
 
