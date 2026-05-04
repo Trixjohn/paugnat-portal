@@ -12,8 +12,7 @@ class EventsController {
 
         $db = Database::getInstance()->getConnection();
 
-
-        // Fetch events
+        // Fetch events ordered by date
         $result = $db->query("SELECT * FROM events ORDER BY eventDate ASC");
 
         $events = [];
@@ -21,9 +20,9 @@ class EventsController {
         if ($result && $result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
 
-                // Fetch related images (camelCase table)
+                // Fetch related images
                 $imgResult = $db->query(
-                    "SELECT imagePath FROM eventImages WHERE eventId = " . intval($row['id'])
+                    "SELECT imagePath FROM eventimages WHERE eventId = " . intval($row['id'])
                 );
 
                 $row['images'] = [];
@@ -34,7 +33,7 @@ class EventsController {
                     }
                 }
 
-                // fallback for legacy single image
+                // Fallback: use legacy imagePath column on the events row if no images found
                 if (empty($row['images']) && !empty($row['imagePath'])) {
                     $row['images'][] = $row['imagePath'];
                 }
