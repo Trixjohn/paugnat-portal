@@ -11,13 +11,13 @@
 
     <nav class="navbar navbar-expand-md fixed-top fw-bold navbar-custom shadow-sm">
         <div class="container py-1">
-            <a href="../home.php" class="navbar-brand text-dark hover-glow fs-4">PAUGNAT</a>
+            <a href="../index.php" class="navbar-brand text-dark hover-glow fs-4">PAUGNAT</a>
             <button class="navbar-toggler border-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
                 <div class="navbar-nav gap-3 align-items-center mt-3 mt-md-0">
-                    <a href="../home.php" class="nav-link text-dark hover-glow">Home</a>
+                    <a href="../index.php" class="nav-link text-dark hover-glow">Home</a>
                     <a href="about.php" class="nav-link text-dark hover-glow">About</a>
                     <a href="events.php" class="nav-link text-dark hover-glow">Events</a>
                     <a href="leaderboards.php" class="nav-link text-dark hover-glow">Leaderboards</a>
@@ -49,10 +49,35 @@
                                 <?php else: ?>
                                     <div class="display-4 mb-3 text-ustp-gold">📅</div>
                                 <?php endif; ?>
-                                <h5 class="card-title fw-bold fs-4 mb-3"><?php echo htmlspecialchars($event['eventName']); ?></h5>
-                                <p class="card-text text-light opacity-75 mb-4 mt-auto">Date: <?php echo htmlspecialchars(date('F j, Y', strtotime($event['eventDate']))); ?></p>
-                                <div>
-                                    <span class="badge bg-info text-dark rounded-pill px-3 py-2 shadow-sm">Scheduled</span>
+                                <h5 class="card-title fw-bold fs-4 mb-2"><?php echo htmlspecialchars($event['eventName']); ?></h5>
+                                <?php if (!empty($event['description'])): ?>
+                                    <p class="small text-light opacity-50 mb-3"><?php echo htmlspecialchars($event['description']); ?></p>
+                                <?php endif; ?>
+
+                                <div class="mt-auto">
+                                    <div class="mb-3 text-start small text-light opacity-75">
+                                        <?php if (!empty($event['location'])): ?>
+                                            <div class="mb-1">📍 <?php echo htmlspecialchars($event['location']); ?></div>
+                                        <?php endif; ?>
+                                        <div class="mb-1">📅 <?php echo htmlspecialchars(date('F j, Y', strtotime($event['eventDate']))); ?></div>
+                                        <?php if (!empty($event['startTime'])): ?>
+                                            <div>⏰ <?php echo htmlspecialchars(date('g:i A', strtotime($event['startTime']))); ?> 
+                                                <?php echo !empty($event['endTime']) ? ' - ' . htmlspecialchars(date('g:i A', strtotime($event['endTime']))) : ''; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <?php 
+                                        $statusClass = "bg-secondary";
+                                        $status = $event['status'] ?? 'upcoming';
+                                        if ($status === "upcoming") $statusClass = "bg-info text-dark";
+                                        else if ($status === "ongoing") $statusClass = "bg-success";
+                                        else if ($status === "completed") $statusClass = "bg-primary";
+                                        else if ($status === "cancelled") $statusClass = "bg-danger";
+                                    ?>
+                                    <span class="badge <?php echo $statusClass; ?> rounded-pill px-3 py-2 shadow-sm text-uppercase small fw-bold">
+                                        <?php echo htmlspecialchars($status); ?>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +102,7 @@
         <?php endif; ?>
 
         <div class="text-center mt-auto pt-5 mt-5">
-            <a href="../home.php" class="btn btn-outline-warning btn-modern px-5 py-2 fw-bold">Back to Home</a>
+            <a href="../index.php" class="btn btn-outline-warning btn-modern px-5 py-2 fw-bold">Back to Home</a>
         </div>
     </div>
 

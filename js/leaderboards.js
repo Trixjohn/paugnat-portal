@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 li.className = "list-group-item d-flex justify-content-between align-items-center";
 
                 li.innerHTML = `
-                    <span class="fw-bold">${rank} ${college.name}</span>
-                    <span class="badge ${badgeClass} rounded-pill">${college.points} pts</span>
+                    <span class="fw-bold">${rank} ${college.name || "-"}</span>
+                    <span class="badge ${badgeClass} rounded-pill">${college.points || 0} pts</span>
                 `;
 
                 leaderboard.appendChild(li);

@@ -9,12 +9,14 @@
 /** @type {Array<{id: number, eventName: string, eventDate: string}>} */
 let cachedEventsList = [];
 
-// ─── Initialisation ──────────────────────────────────────────────────────────
+// ─── Initialization ──────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", function () {
     loadColleges();
     loadEvents();
     attachPointsFormListener();
+    attachAddCollegeFormListener();
+    attachDeleteCollegeListener();
     attachEventFormListener();
     attachEventSelectListener();
 });
@@ -47,6 +49,23 @@ function attachEventSelectListener() {
         eventSelect.addEventListener("change", function () {
             populateEventFields(this.value);
         });
+    }
+}
+
+function attachAddCollegeFormListener() {
+    const form = document.getElementById("addCollegeForm");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            handleAddCollege();
+        });
+    }
+}
+
+function attachDeleteCollegeListener() {
+    const btn = document.getElementById("deleteCollegeBtn");
+    if (btn) {
+        btn.addEventListener("click", handleDeleteCollege);
     }
 }
 
@@ -128,12 +147,20 @@ function loadEvents() {
                 dropdownOption.textContent = `${event.eventName} (${event.eventDate})`;
                 eventDropdown.appendChild(dropdownOption);
 
+                // Status badge logic
+                let statusBadgeClass = "bg-secondary";
+                if (event.status === "upcoming") statusBadgeClass = "bg-info text-dark";
+                else if (event.status === "ongoing") statusBadgeClass = "bg-success";
+                else if (event.status === "completed") statusBadgeClass = "bg-primary";
+                else if (event.status === "cancelled") statusBadgeClass = "bg-danger";
+
                 // Populate the upcoming events table
                 const tableRow = document.createElement("tr");
                 tableRow.innerHTML = `
-                    <td class="opacity-75">${event.id}</td>
-                    <td class="fw-bold">${event.eventName}</td>
-                    <td class="text-end text-info">${event.eventDate}</td>
+                    <td class="fw-bold text-white">${event.eventName}</td>
+                    <td class="opacity-75">${event.location || "-"}</td>
+                    <td><span class="badge ${statusBadgeClass} small fw-bold text-uppercase">${event.status || "upcoming"}</span></td>
+                    <td class="text-end text-info fw-bold">${event.eventDate}</td>
                 `;
                 upcomingEventsTable.appendChild(tableRow);
             });
@@ -159,7 +186,26 @@ function populateEventFields(selectedEventId) {
     });
 
     document.getElementById("eventName").value = matchedEvent ? matchedEvent.eventName : "";
+    document.getElementById("eventDescription").value = matchedEvent && matchedEvent.description ? matchedEvent.description : "";
+    document.getElementById("eventType").value = matchedEvent && matchedEvent.eventType ? matchedEvent.eventType : "sports";
+    document.getElementById("eventStatus").value = matchedEvent && matchedEvent.status ? matchedEvent.status : "upcoming";
     document.getElementById("eventDate").value = matchedEvent ? matchedEvent.eventDate : "";
+    document.getElementById("eventStartTime").value = matchedEvent && matchedEvent.startTime ? matchedEvent.startTime : "";
+    document.getElementById("eventEndTime").value = matchedEvent && matchedEvent.endTime ? matchedEvent.endTime : "";
+    document.getElementById("eventLocation").value = matchedEvent && matchedEvent.location ? matchedEvent.location : "";
+    document.getElementById("eventMaxParticipants").value = matchedEvent && matchedEvent.maxParticipants ? matchedEvent.maxParticipants : "";
+
+    const previewDiv = document.getElementById("eventImagePreview");
+    const previewImg = previewDiv ? previewDiv.querySelector("img") : null;
+    if (previewDiv && previewImg) {
+        if (matchedEvent && matchedEvent.imagePath) {
+            previewImg.src = "../public/" + matchedEvent.imagePath;
+            previewDiv.classList.remove("d-none");
+        } else {
+            previewImg.src = "";
+            previewDiv.classList.add("d-none");
+        }
+    }
 
     const imageFileInput = document.getElementById("eventImage");
     if (imageFileInput) imageFileInput.value = "";
@@ -310,6 +356,82 @@ function deleteEvent() {
         .catch(function (fetchError) {
             console.error("Error deleting event:", fetchError);
             showFeedback(eventMessageDiv, false, "An error occurred while deleting the event. Please try again.");
+        });
+}
+
+// ─── College Action Handlers ──────────────────────────────────────────────────
+
+function handleAddCollege() {
+    const messageDiv = document.getElementById("collegeMessage");
+    const nameInput  = document.getElementById("collegeName");
+    
+    const name = nameInput.value.trim();
+    const code = document.getElementById("collegeCode").value.trim();
+    const description = document.getElementById("collegeDescription").value.trim();
+    const deanName = document.getElementById("collegeDeanName").value.trim();
+    const email = document.getElementById("collegeEmail").value.trim();
+    const phone = document.getElementById("collegePhone").value.trim();
+    const building = document.getElementById("collegeBuilding").value.trim();
+    const establishedYear = document.getElementById("collegeEstablishedYear").value.trim();
+
+    if (!name) {
+        showFeedback(messageDiv, false, "College name cannot be empty.");
+        nameInput.focus();
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("college_name", name);
+    formData.append("code", code);
+    formData.append("description", description);
+    formData.append("deanName", deanName);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("building", building);
+    formData.append("establishedYear", establishedYear);
+
+    fetch("../backend/addCollege.php", { method: "POST", body: formData })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+            showFeedback(messageDiv, data.success, data.message);
+            if (data.success) {
+                document.getElementById("addCollegeForm").reset();
+                loadColleges();
+                setTimeout(function () { location.reload(); }, 1500);
+            }
+        })
+        .catch(function (err) {
+            console.error("Add college error:", err);
+            showFeedback(messageDiv, false, "An error occurred while adding the college.");
+        });
+}
+
+function handleDeleteCollege() {
+    const messageDiv = document.getElementById("collegeMessage");
+    const selectedId = document.getElementById("collegeId").value;
+
+    if (!selectedId) {
+        showFeedback(messageDiv, false, "Please select a college to delete.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this college? This cannot be undone.")) return;
+
+    const formData = new FormData();
+    formData.append("id", selectedId);
+
+    fetch("../backend/deleteCollege.php", { method: "POST", body: formData })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+            showFeedback(messageDiv, data.success, data.message);
+            if (data.success) {
+                loadColleges();
+                setTimeout(function () { location.reload(); }, 1200);
+            }
+        })
+        .catch(function (err) {
+            console.error("Delete college error:", err);
+            showFeedback(messageDiv, false, "An error occurred while deleting the college.");
         });
 }
 

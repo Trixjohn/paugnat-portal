@@ -45,7 +45,7 @@
                         <hr class="flex-grow-1 border-secondary">
                     </div>
 
-                    <a href="../home.php" class="btn btn-outline-light w-100 btn-modern py-2 fw-bold text-uppercase small">Return to Home</a>
+                    <a href="../index.php" class="btn btn-outline-light w-100 btn-modern py-2 fw-bold text-uppercase small">Return to Home</a>
                 </div>
             </div>
 
