@@ -11,13 +11,13 @@
 
     <nav class="navbar navbar-expand-md fixed-top fw-bold navbar-custom shadow-sm">
         <div class="container py-1">
-            <a href="home.php" class="navbar-brand text-dark fs-4">PAUGNAT</a>
+            <a href="index.php" class="navbar-brand text-dark fs-4">PAUGNAT</a>
             <button class="navbar-toggler border-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
                 <div class="navbar-nav gap-3 align-items-center mt-3 mt-md-0">
-                    <a href="home.php" class="nav-link text-dark hover-glow">Home</a>
+                    <a href="index.php" class="nav-link text-dark hover-glow">Home</a>
                     <a href="pages/about.php" class="nav-link text-dark hover-glow">About</a>
                     <a href="pages/events.php" class="nav-link text-dark hover-glow">Events</a>
                     <a href="pages/leaderboards.php" class="nav-link text-dark hover-glow">Leaderboards</a>

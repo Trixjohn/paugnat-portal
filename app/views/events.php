@@ -49,10 +49,35 @@
                                 <?php else: ?>
                                     <div class="display-4 mb-3 text-ustp-gold">📅</div>
                                 <?php endif; ?>
-                                <h5 class="card-title fw-bold fs-4 mb-3"><?php echo htmlspecialchars($event['eventName']); ?></h5>
-                                <p class="card-text text-light opacity-75 mb-4 mt-auto">Date: <?php echo htmlspecialchars(date('F j, Y', strtotime($event['eventDate']))); ?></p>
-                                <div>
-                                    <span class="badge bg-info text-dark rounded-pill px-3 py-2 shadow-sm">Scheduled</span>
+                                <h5 class="card-title fw-bold fs-4 mb-2"><?php echo htmlspecialchars($event['eventName']); ?></h5>
+                                <?php if (!empty($event['description'])): ?>
+                                    <p class="small text-light opacity-50 mb-3"><?php echo htmlspecialchars($event['description']); ?></p>
+                                <?php endif; ?>
+
+                                <div class="mt-auto">
+                                    <div class="mb-3 text-start small text-light opacity-75">
+                                        <?php if (!empty($event['location'])): ?>
+                                            <div class="mb-1">📍 <?php echo htmlspecialchars($event['location']); ?></div>
+                                        <?php endif; ?>
+                                        <div class="mb-1">📅 <?php echo htmlspecialchars(date('F j, Y', strtotime($event['eventDate']))); ?></div>
+                                        <?php if (!empty($event['startTime'])): ?>
+                                            <div>⏰ <?php echo htmlspecialchars(date('g:i A', strtotime($event['startTime']))); ?> 
+                                                <?php echo !empty($event['endTime']) ? ' - ' . htmlspecialchars(date('g:i A', strtotime($event['endTime']))) : ''; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <?php 
+                                        $statusClass = "bg-secondary";
+                                        $status = $event['status'] ?? 'upcoming';
+                                        if ($status === "upcoming") $statusClass = "bg-info text-dark";
+                                        else if ($status === "ongoing") $statusClass = "bg-success";
+                                        else if ($status === "completed") $statusClass = "bg-primary";
+                                        else if ($status === "cancelled") $statusClass = "bg-danger";
+                                    ?>
+                                    <span class="badge <?php echo $statusClass; ?> rounded-pill px-3 py-2 shadow-sm text-uppercase small fw-bold">
+                                        <?php echo htmlspecialchars($status); ?>
+                                    </span>
                                 </div>
                             </div>
                         </div>

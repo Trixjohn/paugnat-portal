@@ -106,8 +106,8 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
         <div class="col-xl-6">
             <div class="card glass-card shadow-sm p-4 h-100">
-                <h3 class="fw-bold text-ustp-gold">Update Points</h3>
-                <p class="text-secondary mb-3 opacity-75">Update, add, or delete colleges.</p>
+                <h3 class="fw-bold text-ustp-gold">Update Colleges </h3>
+                <p class="text-secondary mb-3 opacity-75">(Info, Points, etc)</p>
 
                 <form id="pointsForm">
                     <div class="mb-3">
@@ -131,8 +131,36 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
                 <form id="addCollegeForm">
                     <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Add College</label>
+                        <label class="form-label text-light fw-bold">College Name</label>
                         <input type="text" name="college_name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="Enter college name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Code</label>
+                        <input type="text" name="code" id="collegeCode" class="form-control bg-dark text-white border-secondary" placeholder="Enter college code">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Description</label>
+                        <textarea name="description" id="collegeDescription" class="form-control bg-dark text-white border-secondary" placeholder="Enter description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Dean Name</label>
+                        <input type="text" name="deanName" id="collegeDeanName" class="form-control bg-dark text-white border-secondary" placeholder="Enter Dean's name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Email</label>
+                        <input type="email" name="email" id="collegeEmail" class="form-control bg-dark text-white border-secondary" placeholder="Enter email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Phone</label>
+                        <input type="text" name="phone" id="collegePhone" class="form-control bg-dark text-white border-secondary" placeholder="Enter phone number">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Building</label>
+                        <input type="text" name="building" id="collegeBuilding" class="form-control bg-dark text-white border-secondary" placeholder="Enter building">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Established Year</label>
+                        <input type="number" name="establishedYear" id="collegeEstablishedYear" class="form-control bg-dark text-white border-secondary" placeholder="Enter established year">
                     </div>
 
                     <button type="submit" class="btn btn-success w-100 btn-modern fw-bold py-2">
@@ -152,40 +180,96 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
         </div>
 
         <div class="col-xl-6">
-                <div class="card glass-card shadow-sm p-4 h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h3 class="fw-bold text-info">Manage Events</h3>
-                            <p class="text-secondary mb-0 opacity-75">Edit an existing event or create a new one.</p>
-                        </div>
-                        <span class="badge bg-dark border py-2 px-3 rounded-pill shadow-sm">Schedule</span>
+            <div class="card glass-card shadow-sm p-4 h-100">
+                <h3 class="fw-bold text-info">Manage Events</h3>
+                <p class="text-secondary mb-3 opacity-75">Edit an existing event or create a new one.</p>
+
+                <form id="eventForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Select Event</label>
+                        <select id="eventSelect" class="form-select bg-dark text-white border-secondary">
+                            <option value="">Create New Event</option>
+                        </select>
                     </div>
-                    <form id="eventForm">
-                        <div class="mb-3">
-                            <label class="form-label text-light fw-bold">Select Event</label>
-                            <select id="eventSelect" class="form-select bg-dark text-white border-secondary">
-                                <option value="">Create New Event</option>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Event Name</label>
+                        <input type="text" name="event_name" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Description</label>
+                        <textarea name="description" id="eventDescription" class="form-control bg-dark text-white border-secondary" placeholder="Event description"></textarea>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-light fw-bold">Event Type</label>
+                            <select name="eventType" id="eventType" class="form-select bg-dark text-white border-secondary">
+                                <option value="sports">Sports</option>
+                                <option value="academic">Academic</option>
+                                <option value="cultural">Cultural</option>
+                                <option value="esport">eSport</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label text-light fw-bold">Event Name</label>
-                            <input type="text" name="event_name" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
+                        <div class="col-6">
+                            <label class="form-label text-light fw-bold">Status</label>
+                            <select name="status" id="eventStatus" class="form-select bg-dark text-white border-secondary">
+                                <option value="upcoming">Upcoming</option>
+                                <option value="ongoing">Ongoing</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label text-light fw-bold">Event Date</label>
-                            <input type="date" name="event_date" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light fw-bold">Event Date</label>
+                        <input type="date" name="event_date" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-light fw-bold">Start Time</label>
+                            <input type="time" name="startTime" id="eventStartTime" class="form-control bg-dark text-white border-secondary">
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label text-light fw-bold">Event Images (Optional)</label>
-                            <input type="file" name="event_image[]" id="eventImage" class="form-control bg-dark text-white border-secondary" accept="image/*" multiple>
+                        <div class="col-6">
+                            <label class="form-label text-light fw-bold">End Time</label>
+                            <input type="time" name="endTime" id="eventEndTime" class="form-control bg-dark text-white border-secondary">
                         </div>
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-info text-dark w-100 btn-modern fw-bold py-2">Save Event</button>
-                            <button type="button" id="deleteEventBtn" class="btn btn-danger w-100 btn-modern fw-bold py-2" onclick="deleteEvent()" disabled>Delete Event</button>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-8">
+                            <label class="form-label text-light fw-bold">Location</label>
+                            <input type="text" name="location" id="eventLocation" class="form-control bg-dark text-white border-secondary" placeholder="Event location">
                         </div>
-                    </form>
-                    <div id="eventMessage" class="mt-3"></div>
-                </div>
+                        <div class="col-4">
+                            <label class="form-label text-light fw-bold">Max Participants</label>
+                            <input type="number" name="maxParticipants" id="eventMaxParticipants" class="form-control bg-dark text-white border-secondary" placeholder="e.g. 100">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-light fw-bold">Event Image</label>
+                        <div id="eventImagePreview" class="mb-2 d-none">
+                            <img src="" alt="Event Image" class="img-thumbnail bg-dark border-secondary" style="max-height: 150px;">
+                        </div>
+                        <input type="file" name="event_image" id="eventImage" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-info text-dark w-100 btn-modern fw-bold py-2">
+                            Save Event
+                        </button>
+
+                        <button type="button" id="deleteEventBtn" class="btn btn-danger w-100 btn-modern fw-bold py-2" onclick="deleteEvent()" disabled>
+                            Delete Event
+                        </button>
+                    </div>
+                </form>
+
+                <div id="eventMessage" class="mt-3"></div>
             </div>
         </div>
 
@@ -220,8 +304,9 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                     <table class="table table-borderless table-hover text-light align-middle">
                         <thead>
                             <tr class="text-secondary small text-uppercase border-bottom border-secondary">
-                                <th>ID</th>
                                 <th>Event</th>
+                                <th>Location</th>
+                                <th>Status</th>
                                 <th class="text-end">Date</th>
                             </tr>
                         </thead>
@@ -233,6 +318,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
     </div>
 
+
     <div class="mt-5 pt-3 d-flex flex-wrap gap-3 justify-content-center border-top border-secondary border-opacity-25">
         <a href="../pages/events.php" class="btn border btn-modern text-light fw-bold px-4 py-2 hover-glow">
             View Public Events
@@ -242,8 +328,8 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
             View Leaderboards
         </a>
 
-        <a href="../index.php" class="btn border-warning text-warning btn-modern fw-bold px-4 py-2 hover-glow">
-            Home
+        <a href="../home.php" class="btn border-warning text-warning btn-modern fw-bold px-4 py-2 hover-glow">
+            Home Link
         </a>
     </div>
 

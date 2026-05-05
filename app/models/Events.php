@@ -8,7 +8,7 @@ class Events {
     }
 
     public function getAllEvents() {
-        $result = $this->db->query("SELECT id, eventName, eventDate FROM events ORDER BY eventDate ASC");
+        $result = $this->db->query("SELECT * FROM events ORDER BY eventDate ASC");
 
         $events = [];
         if ($result) {
