@@ -37,7 +37,7 @@
             <?php if (isset($events) && count($events) > 0): ?>
                 <?php foreach ($events as $event): ?>
                     <div class="col-md-4">
-                        <div class="card glass-card text-white p-2 h-100">
+                        <div class="card glass-card text-dark p-2 h-100">
                             <div class="card-body text-center d-flex flex-column">
                                 <?php if (!empty($event['images'])): ?>
                                     <div class="mb-3 d-flex overflow-hidden rounded-3" style="height: 160px; gap: 2px;">
@@ -49,13 +49,13 @@
                                 <?php else: ?>
                                     <div class="display-4 mb-3 text-ustp-gold">📅</div>
                                 <?php endif; ?>
-                                <h5 class="card-title fw-bold fs-4 mb-2"><?php echo htmlspecialchars($event['eventName']); ?></h5>
+                                <h5 class="card-title fw-bold text-ustp-gold fs-4 mb-2"><?php echo htmlspecialchars($event['eventName']); ?></h5>
                                 <?php if (!empty($event['description'])): ?>
-                                    <p class="small text-light opacity-50 mb-3"><?php echo htmlspecialchars($event['description']); ?></p>
+                                    <p class="small text-dark opacity-50 mb-3"><?php echo htmlspecialchars($event['description']); ?></p>
                                 <?php endif; ?>
 
                                 <div class="mt-auto">
-                                    <div class="mb-3 text-start small text-light opacity-75">
+                                    <div class="mb-3 text-start small text-dark opacity-75">
                                         <?php if (!empty($event['location'])): ?>
                                             <div class="mb-1">📍 <?php echo htmlspecialchars($event['location']); ?></div>
                                         <?php endif; ?>

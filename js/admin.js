@@ -157,7 +157,7 @@ function loadEvents() {
                 // Populate the upcoming events table
                 const tableRow = document.createElement("tr");
                 tableRow.innerHTML = `
-                    <td class="fw-bold text-white">${event.eventName}</td>
+                    <td class="fw-bold text-dark">${event.eventName}</td>
                     <td class="opacity-75">${event.location || "-"}</td>
                     <td><span class="badge ${statusBadgeClass} small fw-bold text-uppercase">${event.status || "upcoming"}</span></td>
                     <td class="text-end text-info fw-bold">${event.eventDate}</td>
