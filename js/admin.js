@@ -261,17 +261,8 @@ function handleUpdatePoints() {
     });
 }
 
-<<<<<<< HEAD
-/**
- * Validates and submits the event creation/update form.
- * Requires a non-empty event name and a valid date.
- */
-window.handleSaveEvent = function () {
 
-
-=======
 function handleSaveEvent() {
->>>>>>> upstream/main
     const eventMessageDiv = document.getElementById("eventMessage");
     const eventNameInput = document.getElementById("eventName");
     const eventDateInput = document.getElementById("eventDate");
