@@ -132,7 +132,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                 <form id="addCollegeForm">
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold">College Name</label>
-                        <input type="text" name="college_name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="Enter college name" required>
+                        <input type="text" name="collegeName" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="Enter college name" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold">Code</label>
@@ -194,7 +194,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold">Event Name</label>
-                        <input type="text" name="event_name" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
+                        <input type="text" name="eventName" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
                     </div>
 
                     <div class="mb-3">
@@ -225,7 +225,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold">Event Date</label>
-                        <input type="date" name="event_date" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
+                        <input type="date" name="eventDate" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
                     </div>
 
                     <div class="row g-2 mb-3">
@@ -255,11 +255,11 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                         <div id="eventImagePreview" class="mb-2 d-none">
                             <img src="" alt="Event Image" class="img-thumbnail bg-dark border-secondary" style="max-height: 150px;">
                         </div>
-                        <input type="file" name="event_image" id="eventImage" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                        <input type="file" name="eventImage" id="eventImage" class="form-control bg-dark text-white border-secondary" accept="image/*">
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-info text-dark w-100 btn-modern fw-bold py-2">
+                        <button type="button" onclick="handleSaveEvent(event)" class="btn btn-info text-dark w-100 btn-modern fw-bold py-2">
                             Save Event
                         </button>
 

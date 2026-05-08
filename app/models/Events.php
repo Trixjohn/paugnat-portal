@@ -8,9 +8,25 @@ class Events {
     }
 
     public function getAllEvents() {
-        $result = $this->db->query("SELECT id, eventName, eventDate FROM events ORDER BY eventDate ASC");
+        $result = $this->db->query("
+            SELECT 
+                id,
+                eventName,
+                description,
+                eventType,
+                eventDate,
+                startTime,
+                endTime,
+                location,
+                status,
+                maxParticipants,
+                imagePath
+            FROM events 
+            ORDER BY eventDate ASC
+        ");
 
         $events = [];
+
         if ($result) {
             while ($row = $result->fetch_assoc()) {
                 $events[] = $row;
@@ -20,17 +36,54 @@ class Events {
         return $events;
     }
 
-    public function saveEvent($id, $name, $date) {
+    public function saveEvent($id, $name, $description, $type, $date, $startTime, $endTime, $location, $status, $maxParticipants, $imagePath) {
+
         if ($id > 0) {
-            $stmt = $this->db->prepare(
-                "UPDATE events SET eventName = ?, eventDate = ? WHERE id = ?"
+            // UPDATE
+            $stmt = $this->db->prepare("
+                UPDATE events 
+                SET eventName = ?, description = ?, eventType = ?, eventDate = ?, 
+                    startTime = ?, endTime = ?, location = ?, status = ?, 
+                    maxParticipants = ?, imagePath = ?
+                WHERE id = ?
+            ");
+
+            $stmt->bind_param(
+                "ssssssssisi",
+                $name,
+                $description,
+                $type,
+                $date,
+                $startTime,
+                $endTime,
+                $location,
+                $status,
+                $maxParticipants,
+                $imagePath,
+                $id
             );
-            $stmt->bind_param("ssi", $name, $date, $id);
+
         } else {
-            $stmt = $this->db->prepare(
-                "INSERT INTO events (eventName, eventDate) VALUES (?, ?)"
+            // INSERT
+            $stmt = $this->db->prepare("
+                INSERT INTO events 
+                (eventName, description, eventType, eventDate, startTime, endTime, location, status, maxParticipants, imagePath)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+
+            $stmt->bind_param(
+                "ssssssssis",
+                $name,
+                $description,
+                $type,
+                $date,
+                $startTime,
+                $endTime,
+                $location,
+                $status,
+                $maxParticipants,
+                $imagePath
             );
-            $stmt->bind_param("ss", $name, $date);
         }
 
         $stmt->execute();

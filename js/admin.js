@@ -1,3 +1,4 @@
+
 /**
  * admin.js
  * Manages all admin dashboard interactions:
@@ -181,6 +182,7 @@ function loadEvents() {
  * @param {string} selectedEventId - The ID of the selected event, or "" for a new event.
  */
 function populateEventFields(selectedEventId) {
+
     const matchedEvent = cachedEventsList.find(function (event) {
         return String(event.id) === String(selectedEventId);
     });
@@ -266,14 +268,15 @@ function handleUpdatePoints() {
  * Validates and submits the event creation/update form.
  * Requires a non-empty event name and a valid date.
  */
-function handleSaveEvent() {
+window.handleSaveEvent = function () {
+
+
     const eventMessageDiv = document.getElementById("eventMessage");
     const eventNameInput = document.getElementById("eventName");
     const eventDateInput = document.getElementById("eventDate");
     const eventNameValue = eventNameInput.value.trim();
     const eventDateValue = eventDateInput.value.trim();
 
-    // Client-side validation
     if (!eventNameValue) {
         showFeedback(eventMessageDiv, false, "Event name cannot be empty.");
         eventNameInput.focus();
@@ -299,24 +302,25 @@ function handleSaveEvent() {
         body: formData
     })
     .then(function (response) {
-        if (!response.ok) throw new Error("Network error: " + response.status);
         return response.json();
     })
     .then(function (responseData) {
-        showFeedback(eventMessageDiv, responseData.success, responseData.message);
 
-        if (responseData.success) {
-            document.getElementById("eventForm").reset();
-            eventDropdown.value = "";
-            loadEvents();
-            setTimeout(function () { location.reload(); }, 1500);
-        }
+        console.log("RESPONSE:", responseData);
+
+    showFeedback(eventMessageDiv, responseData.success, responseData.message);
+
+    if (responseData.success) {
+        document.getElementById("eventForm").reset();
+        eventDropdown.value = "";
+        loadEvents();
+    }
     })
-    .catch(function (fetchError) {
-        console.error("Error saving event:", fetchError);
-        showFeedback(eventMessageDiv, false, "An error occurred while saving the event. Please try again.");
+    .catch(function (error) {
+        console.error("Error saving event:", error);
+        showFeedback(eventMessageDiv, false, "An error occurred while saving.");
     });
-}
+};
 
 /**
  * Confirms and deletes the currently selected event.
