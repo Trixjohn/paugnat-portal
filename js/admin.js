@@ -6,6 +6,9 @@
  *   - Creating, editing, and deleting events with validation
  */
 
+/** @type {Array<{id: number, name: string, points: number}>} */
+let cachedCollegesList = [];
+
 /** @type {Array<{id: number, eventName: string, eventDate: string}>} */
 let cachedEventsList = [];
 
@@ -14,21 +17,29 @@ let cachedEventsList = [];
 document.addEventListener("DOMContentLoaded", function () {
     loadColleges();
     loadEvents();
-    attachPointsFormListener();
-    attachAddCollegeFormListener();
-    attachDeleteCollegeListener();
+    attachCollegeFormListener();
+    attachCollegeSelectListener();
     attachEventFormListener();
     attachEventSelectListener();
 });
 
 // ─── Event Listeners ─────────────────────────────────────────────────────────
 
-function attachPointsFormListener() {
-    const pointsForm = document.getElementById("pointsForm");
-    if (pointsForm) {
-        pointsForm.addEventListener("submit", function (e) {
+function attachCollegeFormListener() {
+    const collegeForm = document.getElementById("collegeForm");
+    if (collegeForm) {
+        collegeForm.addEventListener("submit", function (e) {
             e.preventDefault();
             handleUpdatePoints();
+        });
+    }
+}
+
+function attachCollegeSelectListener() {
+    const collegeSelect = document.getElementById("collegeId");
+    if (collegeSelect) {
+        collegeSelect.addEventListener("change", function () {
+            populateCollegeFields(this.value);
         });
     }
 }
@@ -52,23 +63,6 @@ function attachEventSelectListener() {
     }
 }
 
-function attachAddCollegeFormListener() {
-    const form = document.getElementById("addCollegeForm");
-    if (form) {
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            handleAddCollege();
-        });
-    }
-}
-
-function attachDeleteCollegeListener() {
-    const btn = document.getElementById("deleteCollegeBtn");
-    if (btn) {
-        btn.addEventListener("click", handleDeleteCollege);
-    }
-}
-
 // ─── Data Loading ─────────────────────────────────────────────────────────────
 
 /**
@@ -81,45 +75,65 @@ function loadColleges() {
             return response.json();
         })
         .then(function (collegesData) {
-            const collegeDropdown = document.getElementById("collegeId");
+            const collegeSelect = document.getElementById("collegeId");
             const collegeStandingsTable = document.getElementById("collegesTable");
 
-            if (!Array.isArray(collegesData) || collegesData.length === 0) {
-                collegeDropdown.innerHTML = '<option value="">No colleges found</option>';
-                collegeStandingsTable.innerHTML = '<tr><td colspan="3" class="text-center opacity-75">No colleges available.</td></tr>';
+            cachedCollegesList = Array.isArray(collegesData) ? collegesData : [];
+
+            if (collegeSelect) {
+                collegeSelect.innerHTML = '<option value="">Select a college</option>';
+            }
+            
+            if (collegeStandingsTable) {
+                collegeStandingsTable.innerHTML = "";
+            }
+
+            if (cachedCollegesList.length === 0) {
+                if (collegeStandingsTable) {
+                    collegeStandingsTable.innerHTML = '<tr><td colspan="3" class="text-center opacity-75">No colleges available.</td></tr>';
+                }
                 return;
             }
 
-            collegeDropdown.innerHTML = '<option value="">Select a college</option>';
-            collegeStandingsTable.innerHTML = "";
-
-            collegesData.forEach(function (college, rankIndex) {
-                // Populate the dropdown
-                const dropdownOption = document.createElement("option");
-                dropdownOption.value = college.id;
-                dropdownOption.textContent = college.name;
-                collegeDropdown.appendChild(dropdownOption);
+            cachedCollegesList.forEach(function (college, rankIndex) {
+                // Populate the select dropdown
+                if (collegeSelect) {
+                    const option = document.createElement("option");
+                    option.value = college.id;
+                    option.textContent = college.name;
+                    collegeSelect.appendChild(option);
+                }
 
                 // Populate the standings table
-                const tableRow = document.createElement("tr");
-                tableRow.innerHTML = `
-                    <td class="opacity-75">${rankIndex + 1}</td>
-                    <td class="fw-bold">${college.name}</td>
-                    <td class="text-end text-ustp-gold fw-bold">${college.points} pts</td>
-                `;
-                collegeStandingsTable.appendChild(tableRow);
+                if (collegeStandingsTable) {
+                    const tableRow = document.createElement("tr");
+                    tableRow.style.cursor = "pointer";
+                    tableRow.title = "Click to select " + college.name;
+                    tableRow.innerHTML = `
+                        <td class="opacity-75">${rankIndex + 1}</td>
+                        <td class="fw-bold text-ustp-gold">${college.name}</td>
+                        <td class="text-end fw-bold">${college.points} pts</td>
+                    `;
+                    tableRow.addEventListener("click", function() {
+                        if (collegeSelect) {
+                            collegeSelect.value = college.id;
+                            populateCollegeFields(college.id);
+                            document.getElementById("collegeForm").scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                    collegeStandingsTable.appendChild(tableRow);
+                }
             });
         })
         .catch(function (fetchError) {
             console.error("Error loading colleges:", fetchError);
-            document.getElementById("collegeId").innerHTML = '<option value="">Error loading colleges</option>';
-            document.getElementById("collegesTable").innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load colleges.</td></tr>';
+            const collegeSelect = document.getElementById("collegeId");
+            if (collegeSelect) collegeSelect.innerHTML = '<option value="">Error loading colleges</option>';
+            const collegeStandingsTable = document.getElementById("collegesTable");
+            if (collegeStandingsTable) collegeStandingsTable.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load colleges.</td></tr>';
         });
 }
 
-/**
- * Fetches events from the backend and populates the event dropdown and upcoming events table.
- */
 function loadEvents() {
     fetch("../backend/getEvents.php")
         .then(function (response) {
@@ -136,7 +150,7 @@ function loadEvents() {
             upcomingEventsTable.innerHTML = "";
 
             if (cachedEventsList.length === 0) {
-                upcomingEventsTable.innerHTML = '<tr><td colspan="3" class="text-center opacity-75">No events available.</td></tr>';
+                upcomingEventsTable.innerHTML = '<tr><td colspan="4" class="text-center opacity-75">No events available.</td></tr>';
                 return;
             }
 
@@ -168,18 +182,19 @@ function loadEvents() {
         .catch(function (fetchError) {
             console.error("Error loading events:", fetchError);
             document.getElementById("eventSelect").innerHTML = '<option value="">Error loading events</option>';
-            document.getElementById("eventsTable").innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load events.</td></tr>';
+            document.getElementById("eventsTable").innerHTML = '<tr><td colspan="4" class="text-center text-danger">Failed to load events.</td></tr>';
         });
 }
 
-// ─── Event Form Helpers ───────────────────────────────────────────────────────
+function populateCollegeFields(selectedCollegeId) {
+    const matchedCollege = cachedCollegesList.find(function (c) {
+        return String(c.id) === String(selectedCollegeId);
+    });
 
-/**
- * Fills the event name and date fields based on the selected event ID.
- * Clears fields when "Create New Event" is selected (eventId is empty).
- *
- * @param {string} selectedEventId - The ID of the selected event, or "" for a new event.
- */
+    document.getElementById("collegeName").value = matchedCollege ? matchedCollege.name : "";
+    document.getElementById("points").value = "";
+}
+
 function populateEventFields(selectedEventId) {
     const matchedEvent = cachedEventsList.find(function (event) {
         return String(event.id) === String(selectedEventId);
@@ -195,49 +210,31 @@ function populateEventFields(selectedEventId) {
     document.getElementById("eventLocation").value = matchedEvent && matchedEvent.location ? matchedEvent.location : "";
     document.getElementById("eventMaxParticipants").value = matchedEvent && matchedEvent.maxParticipants ? matchedEvent.maxParticipants : "";
 
-    const previewDiv = document.getElementById("eventImagePreview");
-    const previewImg = previewDiv ? previewDiv.querySelector("img") : null;
-    if (previewDiv && previewImg) {
-        if (matchedEvent && matchedEvent.imagePath) {
-            previewImg.src = "../public/" + matchedEvent.imagePath;
-            previewDiv.classList.remove("d-none");
-        } else {
-            previewImg.src = "";
-            previewDiv.classList.add("d-none");
-        }
-    }
-
-    const imageFileInput = document.getElementById("eventImage");
-    if (imageFileInput) imageFileInput.value = "";
-
     const deleteEventButton = document.getElementById("deleteEventBtn");
     if (deleteEventButton) deleteEventButton.disabled = !selectedEventId;
 }
 
 // ─── Action Handlers ──────────────────────────────────────────────────────────
 
-/**
- * Validates and submits the points update form.
- * Requires a college to be selected and points to be a valid number.
- */
 function handleUpdatePoints() {
-    const pointsMessageDiv = document.getElementById("pointsMessage");
+    const messageDiv = document.getElementById("collegeMessage");
     const selectedCollegeId = document.getElementById("collegeId").value;
     const pointsInput = document.getElementById("points");
     const pointsValue = pointsInput.value.trim();
 
-    // Client-side validation
     if (!selectedCollegeId) {
-        showFeedback(pointsMessageDiv, false, "Please select a college before updating points.");
+        showFeedback(messageDiv, false, "Please select a college before updating points.");
         return;
     }
 
     if (pointsValue === "" || isNaN(Number(pointsValue))) {
-        showFeedback(pointsMessageDiv, false, "Please enter a valid number for points.");
+        showFeedback(messageDiv, false, "Please enter a valid number for points.");
         return;
     }
 
-    const formData = new FormData(document.getElementById("pointsForm"));
+    const formData = new FormData();
+    formData.append("id", selectedCollegeId);
+    formData.append("points", pointsValue);
 
     fetch("../backend/updatePoints.php", {
         method: "POST",
@@ -248,24 +245,20 @@ function handleUpdatePoints() {
         return response.json();
     })
     .then(function (responseData) {
-        showFeedback(pointsMessageDiv, responseData.success, responseData.message);
+        showFeedback(messageDiv, responseData.success, responseData.message);
 
         if (responseData.success) {
-            document.getElementById("pointsForm").reset();
+            document.getElementById("collegeForm").reset();
             loadColleges();
             setTimeout(function () { location.reload(); }, 1500);
         }
     })
     .catch(function (fetchError) {
         console.error("Error updating points:", fetchError);
-        showFeedback(pointsMessageDiv, false, "An error occurred while updating points. Please try again.");
+        showFeedback(messageDiv, false, "An error occurred while updating points. Please try again.");
     });
 }
 
-/**
- * Validates and submits the event creation/update form.
- * Requires a non-empty event name and a valid date.
- */
 function handleSaveEvent() {
     const eventMessageDiv = document.getElementById("eventMessage");
     const eventNameInput = document.getElementById("eventName");
@@ -273,16 +266,13 @@ function handleSaveEvent() {
     const eventNameValue = eventNameInput.value.trim();
     const eventDateValue = eventDateInput.value.trim();
 
-    // Client-side validation
     if (!eventNameValue) {
         showFeedback(eventMessageDiv, false, "Event name cannot be empty.");
-        eventNameInput.focus();
         return;
     }
 
     if (!eventDateValue) {
         showFeedback(eventMessageDiv, false, "Please select a valid event date.");
-        eventDateInput.focus();
         return;
     }
 
@@ -314,14 +304,10 @@ function handleSaveEvent() {
     })
     .catch(function (fetchError) {
         console.error("Error saving event:", fetchError);
-        showFeedback(eventMessageDiv, false, "An error occurred while saving the event. Please try again.");
+        showFeedback(eventMessageDiv, false, "An error occurred while saving the event.");
     });
 }
 
-/**
- * Confirms and deletes the currently selected event.
- * Called from the Delete Event button's onclick attribute.
- */
 function deleteEvent() {
     const selectedEventId = document.getElementById("eventSelect").value;
 
@@ -330,8 +316,7 @@ function deleteEvent() {
         return;
     }
 
-    const isConfirmed = confirm("Are you sure you want to delete this event? This action cannot be undone.");
-    if (!isConfirmed) return;
+    if (!confirm("Are you sure you want to delete this event?")) return;
 
     const eventMessageDiv = document.getElementById("eventMessage");
     const deletePayload = new FormData();
@@ -355,95 +340,12 @@ function deleteEvent() {
         })
         .catch(function (fetchError) {
             console.error("Error deleting event:", fetchError);
-            showFeedback(eventMessageDiv, false, "An error occurred while deleting the event. Please try again.");
-        });
-}
-
-// ─── College Action Handlers ──────────────────────────────────────────────────
-
-function handleAddCollege() {
-    const messageDiv = document.getElementById("collegeMessage");
-    const nameInput  = document.getElementById("collegeName");
-    
-    const name = nameInput.value.trim();
-    const code = document.getElementById("collegeCode").value.trim();
-    const description = document.getElementById("collegeDescription").value.trim();
-    const deanName = document.getElementById("collegeDeanName").value.trim();
-    const email = document.getElementById("collegeEmail").value.trim();
-    const phone = document.getElementById("collegePhone").value.trim();
-    const building = document.getElementById("collegeBuilding").value.trim();
-    const establishedYear = document.getElementById("collegeEstablishedYear").value.trim();
-
-    if (!name) {
-        showFeedback(messageDiv, false, "College name cannot be empty.");
-        nameInput.focus();
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("college_name", name);
-    formData.append("code", code);
-    formData.append("description", description);
-    formData.append("deanName", deanName);
-    formData.append("email", email);
-    formData.append("phone", phone);
-    formData.append("building", building);
-    formData.append("establishedYear", establishedYear);
-
-    fetch("../backend/addCollege.php", { method: "POST", body: formData })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (data) {
-            showFeedback(messageDiv, data.success, data.message);
-            if (data.success) {
-                document.getElementById("addCollegeForm").reset();
-                loadColleges();
-                setTimeout(function () { location.reload(); }, 1500);
-            }
-        })
-        .catch(function (err) {
-            console.error("Add college error:", err);
-            showFeedback(messageDiv, false, "An error occurred while adding the college.");
-        });
-}
-
-function handleDeleteCollege() {
-    const messageDiv = document.getElementById("collegeMessage");
-    const selectedId = document.getElementById("collegeId").value;
-
-    if (!selectedId) {
-        showFeedback(messageDiv, false, "Please select a college to delete.");
-        return;
-    }
-
-    if (!confirm("Are you sure you want to delete this college? This cannot be undone.")) return;
-
-    const formData = new FormData();
-    formData.append("id", selectedId);
-
-    fetch("../backend/deleteCollege.php", { method: "POST", body: formData })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (data) {
-            showFeedback(messageDiv, data.success, data.message);
-            if (data.success) {
-                loadColleges();
-                setTimeout(function () { location.reload(); }, 1200);
-            }
-        })
-        .catch(function (err) {
-            console.error("Delete college error:", err);
-            showFeedback(messageDiv, false, "An error occurred while deleting the college.");
+            showFeedback(eventMessageDiv, false, "An error occurred while deleting the event.");
         });
 }
 
 // ─── Utility ─────────────────────────────────────────────────────────────────
 
-/**
- * Displays a success or error alert inside a given container element.
- *
- * @param {HTMLElement} containerElement - The DOM element to render feedback into.
- * @param {boolean}     isSuccess        - True for a success alert, false for danger.
- * @param {string}      feedbackMessage  - The message text to display.
- */
 function showFeedback(containerElement, isSuccess, feedbackMessage) {
     const alertClass = isSuccess ? "alert-success" : "alert-danger";
     containerElement.innerHTML = `<div class="alert ${alertClass} mt-3">${feedbackMessage}</div>`;

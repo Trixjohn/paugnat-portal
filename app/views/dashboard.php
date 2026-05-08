@@ -106,80 +106,94 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
         <div class="col-xl-6">
             <div class="card glass-card shadow-sm p-4 h-100">
-                <h3 class="fw-bold text-ustp-gold">Update Colleges </h3>
-                <p class="text-secondary mb-3 opacity-75">(Info, Points, etc)</p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h3 class="fw-bold text-ustp-gold mb-0">Manage Colleges</h3>
+                        <p class="text-secondary mb-0 opacity-75 small">Update details, points, or add new colleges.</p>
+                    </div>
+                    <div class="bg-ustp-gold bg-opacity-10 p-2 rounded-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-ustp-gold" viewBox="0 0 16 16">
+                            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                            <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM3 10.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </div>
+                </div>
 
-                <form id="pointsForm">
+                <form id="collegeForm">
                     <div class="mb-3">
-                        <label class="form-label text-light fw-bold">College</label>
-                        <select name="id" id="collegeId" class="form-select bg-dark text-white border-secondary" required>
-                            <option value="">Loading...</option>
+                        <label class="form-label text-light fw-bold small text-uppercase opacity-75">Select College</label>
+                        <select id="collegeSelect" class="form-select bg-dark text-white border-secondary">
+                            <option value="">+ Create New College</option>
                         </select>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label text-light fw-bold">Points</label>
-                        <input type="number" name="points" id="points" class="form-control bg-dark text-white border-secondary" placeholder="Enter points (+/-)" required>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">College Name</label>
+                            <input type="text" name="college_name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="e.g. College of Engineering" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">Code</label>
+                            <input type="text" name="code" id="collegeCode" class="form-control bg-dark text-white border-secondary" placeholder="e.g. CEA">
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-warning w-100 btn-modern fw-bold py-2">
-                        Update Points
-                    </button>
+                    <div class="mt-3">
+                        <label class="form-label text-light fw-bold small text-uppercase opacity-75">Description</label>
+                        <textarea name="description" id="collegeDescription" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="Brief overview of the college..."></textarea>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">Dean Name</label>
+                            <input type="text" name="deanName" id="collegeDeanName" class="form-control bg-dark text-white border-secondary" placeholder="Full name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">Email</label>
+                            <input type="email" name="email" id="collegeEmail" class="form-control bg-dark text-white border-secondary" placeholder="college@ustp.edu.ph">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">Phone</label>
+                            <input type="text" name="phone" id="collegePhone" class="form-control bg-dark text-white border-secondary" placeholder="Contact number">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">Building</label>
+                            <input type="text" name="building" id="collegeBuilding" class="form-control bg-dark text-white border-secondary" placeholder="Building location">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75">Established Year</label>
+                            <input type="number" name="establishedYear" id="collegeEstablishedYear" class="form-control bg-dark text-white border-secondary" placeholder="YYYY">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-light fw-bold small text-uppercase opacity-75 text-ustp-gold">Current Points</label>
+                            <input type="number" name="points" id="collegePoints" class="form-control bg-dark text-ustp-gold border-warning border-opacity-50 fw-bold" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning text-dark w-100 btn-modern fw-bold py-2 shadow-sm">
+                            <span id="collegeSubmitBtnText">Add College</span>
+                        </button>
+
+                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2" disabled>
+                            Delete College
+                        </button>
+                    </div>
                 </form>
 
-                <hr class="border-secondary my-4">
-
-                <form id="addCollegeForm">
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">College Name</label>
-                        <input type="text" name="college_name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="Enter college name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Code</label>
-                        <input type="text" name="code" id="collegeCode" class="form-control bg-dark text-white border-secondary" placeholder="Enter college code">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Description</label>
-                        <textarea name="description" id="collegeDescription" class="form-control bg-dark text-white border-secondary" placeholder="Enter description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Dean Name</label>
-                        <input type="text" name="deanName" id="collegeDeanName" class="form-control bg-dark text-white border-secondary" placeholder="Enter Dean's name">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Email</label>
-                        <input type="email" name="email" id="collegeEmail" class="form-control bg-dark text-white border-secondary" placeholder="Enter email">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Phone</label>
-                        <input type="text" name="phone" id="collegePhone" class="form-control bg-dark text-white border-secondary" placeholder="Enter phone number">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Building</label>
-                        <input type="text" name="building" id="collegeBuilding" class="form-control bg-dark text-white border-secondary" placeholder="Enter building">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-light fw-bold">Established Year</label>
-                        <input type="number" name="establishedYear" id="collegeEstablishedYear" class="form-control bg-dark text-white border-secondary" placeholder="Enter established year">
-                    </div>
-
-                    <button type="submit" class="btn btn-success w-100 btn-modern fw-bold py-2">
-                        Add College
-                    </button>
-                </form>
-
-                <hr class="border-secondary my-4">
-
-                <button type="button" id="deleteCollegeBtn" class="btn btn-danger w-100 btn-modern fw-bold py-2">
-                    Delete Selected College
-                </button>
-
-                <div id="pointsMessage" class="mt-3"></div>
                 <div id="collegeMessage" class="mt-3"></div>
             </div>
         </div>
 
+
         <div class="col-xl-6">
+
             <div class="card glass-card shadow-sm p-4 h-100">
                 <h3 class="fw-bold text-info">Manage Events</h3>
                 <p class="text-secondary mb-3 opacity-75">Edit an existing event or create a new one.</p>

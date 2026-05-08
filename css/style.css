@@ -220,9 +220,47 @@ body::before {
     border-bottom: 2px solid #0d1236;
 }
 
-/* ─── Footer ─────────────────────────────────────────────────────────────── */
-
-footer {
-    position: relative;
-    z-index: 1;
+/* ─── Admin Dashboard Enhancements ───────────────────────────────────────── */
+.admin-dashboard .form-label {
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
 }
+
+.admin-dashboard .bg-ustp-gold.bg-opacity-10 {
+    background: rgba(255, 215, 0, 0.1) !important;
+}
+
+.admin-dashboard .bg-info.bg-opacity-10 {
+    background: rgba(13, 202, 240, 0.1) !important;
+}
+
+.admin-dashboard .table-hover tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+    cursor: default;
+}
+
+.admin-dashboard .btn-modern {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-dashboard .btn-modern:not(:disabled):hover {
+    transform: translateY(-2px) scale(1.01);
+}
+
+#collegePoints {
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+}
+
+/* Custom Scrollbar for Textarea */
+.admin-dashboard textarea::-webkit-scrollbar {
+    width: 6px;
+}
+.admin-dashboard textarea::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+.admin-dashboard textarea::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 10px;
+}
+
