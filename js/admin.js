@@ -37,7 +37,7 @@ function attachCollegeFormListener() {
 }
 
 function attachCollegeSelectListener() {
-    const collegeSelect = document.getElementById("collegeId");
+    const collegeSelect = document.getElementById("collegeSelect");
     if (collegeSelect) {
         collegeSelect.addEventListener("change", function () {
             populateCollegeFields(this.value);
@@ -76,7 +76,7 @@ function loadColleges() {
             return response.json();
         })
         .then(function (collegesData) {
-            const collegeSelect = document.getElementById("collegeId");
+            const collegeSelect = document.getElementById("collegeSelect");
             const collegeStandingsTable = document.getElementById("collegesTable");
 
             cachedCollegesList = Array.isArray(collegesData) ? collegesData : [];
@@ -119,7 +119,7 @@ function loadColleges() {
                         if (collegeSelect) {
                             collegeSelect.value = college.id;
                             populateCollegeFields(college.id);
-                            document.getElementById("collegeForm").scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            document.getElementById("pointsForm").scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     });
                     collegeStandingsTable.appendChild(tableRow);
@@ -128,7 +128,7 @@ function loadColleges() {
         })
         .catch(function (fetchError) {
             console.error("Error loading colleges:", fetchError);
-            const collegeSelect = document.getElementById("collegeId");
+            const collegeSelect = document.getElementById("collegeSelect");
             if (collegeSelect) collegeSelect.innerHTML = '<option value="">Error loading colleges</option>';
             const collegeStandingsTable = document.getElementById("collegesTable");
             if (collegeStandingsTable) collegeStandingsTable.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load colleges.</td></tr>';
@@ -188,12 +188,19 @@ function loadEvents() {
 }
 
 function populateCollegeFields(selectedCollegeId) {
-    const matchedCollege = cachedCollegesList.find(function (c) {
-        return String(c.id) === String(selectedCollegeId);
-    });
+    const c = cachedCollegesList.find(x => String(x.id) === String(selectedCollegeId));
 
-    document.getElementById("collegeName").value = matchedCollege ? matchedCollege.name : "";
-    document.getElementById("points").value = "";
+    if (!c) return;
+
+    document.getElementById("collegeName").value = c.name || "";
+    document.getElementById("collegeCode").value = c.code || "";
+    document.getElementById("collegeDescription").value = c.description || "";
+    document.getElementById("collegeDeanName").value = c.deanName || "";
+    document.getElementById("collegeEmail").value = c.email || "";
+    document.getElementById("collegePhone").value = c.phone || "";
+    document.getElementById("collegeBuilding").value = c.building || "";
+    document.getElementById("collegeEstablishedYear").value = c.establishedYear || "";
+    document.getElementById("collegePoints").value = c.points || "";
 }
 
 function populateEventFields(selectedEventId) {
@@ -220,7 +227,7 @@ function populateEventFields(selectedEventId) {
 
 function handleUpdatePoints() {
     const messageDiv = document.getElementById("collegeMessage");
-    const selectedCollegeId = document.getElementById("collegeId").value;
+    const selectedCollegeId = document.getElementById("collegeSelect").value;
     const pointsInput = document.getElementById("points");
     const pointsValue = pointsInput.value.trim();
 
