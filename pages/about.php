@@ -12,7 +12,7 @@
 
     <nav class="navbar navbar-expand-md fixed-top fw-bold navbar-custom shadow-sm">
         <div class="container py-1">
-            <a href="../index.php" class="navbar-brand text-dark hover-glow fs-4">PAUGNAT</a>
+            <a href="../index.php" class="navbar-brand text-dark  fs-4">PAUGNAT</a>
             <button class="navbar-toggler border-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -31,7 +31,7 @@
     <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center pt-5 pb-5">
 
         <div class="text-center mb-5 pt-4">
-            <h1 class="display-5 fw-bold text-ustp-gold hover-glow" style="letter-spacing: -1px;">About PAUGNAT</h1>
+            <h1 class="display-5 fw-bold text-ustp-gold " style="letter-spacing: -1px;">About PAUGNAT</h1>
             <p class="text-light opacity-75 mt-2">University of Science and Technology of Southern Philippines</p>
         </div>
 

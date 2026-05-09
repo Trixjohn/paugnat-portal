@@ -30,6 +30,7 @@ if ($result) {
     }
 }
 
+
 $db->close();
 ?>
 

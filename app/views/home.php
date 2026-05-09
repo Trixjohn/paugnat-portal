@@ -29,7 +29,7 @@
 
     <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center mt-3">
         <div class="text-center mb-5 pt-5 mt-5">
-            <h1 class="display-1 fw-bold text-ustp-gold mb-3 hover-glow" style="letter-spacing: -2px;">PAUGNAT</h1>
+            <h1 class="display-1 fw-bold text-ustp-gold mb-3 " style="letter-spacing: -2px;">PAUGNAT</h1>
             <h2 class="h3 fw-light text-light mb-4" style="letter-spacing: 4px;">2 0 2 7</h2>
             <p class="lead text-light opacity-75 mb-5 mx-auto" style="max-width: 650px; line-height: 1.8;">
                 The University of Science and Technology of Southern Philippines Annual Games and Tournament
