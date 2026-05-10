@@ -46,7 +46,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
     <title>PAUGNAT Admin Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css?v=1.0">
+    <link rel="stylesheet" href="../css/style.css?v=1.1">
 </head>
 
 <body class="admin-dashboard">
@@ -181,7 +181,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                             <span id="collegeSubmitBtnText">Add College</span>
                         </button>
 
-                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2" disabled>
+                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2">
                             Delete College
                         </button>
                     </div>
@@ -278,7 +278,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                             Save Event
                         </button>
 
-                        <button type="button" id="deleteEventBtn" class="btn btn-danger w-100 btn-modern fw-bold py-2" onclick="deleteEvent()" disabled>
+                        <button type="button" id="deleteEventBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2 onclick="deleteEvent>
                             Delete Event
                         </button>
                     </div>
@@ -299,7 +299,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                 <div class="table-responsive">
                     <table class="table table-borderless table-hover text-light align-middle">
                         <thead>
-                            <tr class="text-secondary small text-uppercase border-bottom border-secondary">
+                            <tr class="text-secondary small text-uppercase border-bottom border-secondary text-dark">
                                 <th>#</th>
                                 <th>College</th>
                                 <th class="text-end">Points</th>
@@ -351,7 +351,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../js/admin.js?v=1.3"></script>
+<script src="../js/admin.js?v=1.4"></script>
 
 </body>
 </html>

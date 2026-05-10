@@ -12,7 +12,7 @@
 
     <nav class="navbar navbar-expand-md fixed-top fw-bold navbar-custom shadow-sm">
         <div class="container py-1">
-            <a href="../index.php" class="navbar-brand text-dark hover-glow fs-4">PAUGNAT</a>
+            <a href="../index.php" class="navbar-brand text-dark  fs-4">PAUGNAT</a>
             <button class="navbar-toggler border-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

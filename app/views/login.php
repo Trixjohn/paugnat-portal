@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAUGNAT - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css?v=1.0">
+    <link rel="stylesheet" href="../css/style.css?v=1.1">
 </head>
-<body>
+<body class="admin-dashboard">
 
     <div class="container min-vh-100 d-flex align-items-center justify-content-center">
         <div class="row w-100 align-items-center" style="max-width: 900px;">
 
             <div class="col-md-6 mb-5 mb-md-0 text-center text-md-start pe-md-5">
-                <h1 class="display-3 fw-bold text-ustp-gold hover-glow" style="letter-spacing: -2px;">PAUGNAT</h1>
+                <h1 class="display-3 fw-bold text-ustp-gold " style="letter-spacing: -2px;">PAUGNAT</h1>
                 <h2 class="h4 text-light opacity-75 mb-4 fw-light" style="letter-spacing: 2px;">SECURE PORTAL</h2>
                 <p class="lead text-light opacity-75 fs-5 pb-3">Welcome back. Access your admin tools to manage events, leaderboards, and update live scores.</p>
                 <div class="d-none d-md-block" style="width: 50px; height: 3px; background: var(--ustp-gold); opacity: 0.5;"></div>

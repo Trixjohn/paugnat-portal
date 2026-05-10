@@ -37,7 +37,9 @@ function attachCollegeFormListener() {
 }
 
 function attachCollegeSelectListener() {
+
     const collegeSelect = document.getElementById("collegeSelect");
+
     if (collegeSelect) {
         collegeSelect.addEventListener("change", function () {
             populateCollegeFields(this.value);
@@ -76,13 +78,15 @@ function loadColleges() {
             return response.json();
         })
         .then(function (collegesData) {
+
             const collegeSelect = document.getElementById("collegeSelect");
+
             const collegeStandingsTable = document.getElementById("collegesTable");
 
             cachedCollegesList = Array.isArray(collegesData) ? collegesData : [];
 
             if (collegeSelect) {
-                collegeSelect.innerHTML = '<option value="">Select a college</option>';
+                collegeSelect.innerHTML = '<option value="">+ Create New College</option>';
             }
             
             if (collegeStandingsTable) {
@@ -113,7 +117,7 @@ function loadColleges() {
                     tableRow.innerHTML = `
                         <td class="opacity-75">${rankIndex + 1}</td>
                         <td class="fw-bold text-ustp-gold">${college.name}</td>
-                        <td class="text-end fw-bold">${college.points} pts</td>
+                        <td class="text-end fw-bold text-white">${college.points} pts</td>
                     `;
                     tableRow.addEventListener("click", function() {
                         if (collegeSelect) {
@@ -128,7 +132,9 @@ function loadColleges() {
         })
         .catch(function (fetchError) {
             console.error("Error loading colleges:", fetchError);
+
             const collegeSelect = document.getElementById("collegeSelect");
+
             if (collegeSelect) collegeSelect.innerHTML = '<option value="">Error loading colleges</option>';
             const collegeStandingsTable = document.getElementById("collegesTable");
             if (collegeStandingsTable) collegeStandingsTable.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load colleges.</td></tr>';
@@ -171,12 +177,21 @@ function loadEvents() {
 
                 // Populate the upcoming events table
                 const tableRow = document.createElement("tr");
+                tableRow.style.cursor = "pointer";
+                tableRow.title = "Click to edit " + event.eventName;
                 tableRow.innerHTML = `
-                    <td class="fw-bold text-dark">${event.eventName}</td>
+                    <td class="fw-bold text-white">${event.eventName}</td>
                     <td class="opacity-75">${event.location || "-"}</td>
                     <td><span class="badge ${statusBadgeClass} small fw-bold text-uppercase">${event.status || "upcoming"}</span></td>
-                    <td class="text-end text-info fw-bold">${event.eventDate}</td>
+                    <td class="text-end text-white fw-bold">${event.eventDate}</td>
                 `;
+                tableRow.addEventListener("click", function() {
+                    if (eventDropdown) {
+                        eventDropdown.value = event.id;
+                        populateEventFields(event.id);
+                        document.getElementById("eventForm").scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
                 upcomingEventsTable.appendChild(tableRow);
             });
         })
@@ -201,6 +216,7 @@ function populateCollegeFields(selectedCollegeId) {
     document.getElementById("collegeBuilding").value = c.building || "";
     document.getElementById("collegeEstablishedYear").value = c.establishedYear || "";
     document.getElementById("collegePoints").value = c.points || "";
+
 }
 
 function populateEventFields(selectedEventId) {
@@ -228,7 +244,8 @@ function populateEventFields(selectedEventId) {
 function handleUpdatePoints() {
     const messageDiv = document.getElementById("collegeMessage");
     const selectedCollegeId = document.getElementById("collegeSelect").value;
-    const pointsInput = document.getElementById("points");
+    const pointsInput = document.getElementById("collegePoints");
+
     const pointsValue = pointsInput.value.trim();
 
     if (!selectedCollegeId) {
