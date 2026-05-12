@@ -130,7 +130,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label class="form-label text-light fw-bold small text-uppercase opacity-75">College Name</label>
-                            <input type="text" name="college_name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="e.g. College of Engineering" required>
+                            <input type="text" name="name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="e.g. College of Engineering" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label text-light fw-bold small text-uppercase opacity-75">Code</label>
@@ -181,8 +181,8 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                             <span id="collegeSubmitBtnText">Add College</span>
                         </button>
 
-                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2">
-                            Delete College
+                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2" onclick="deleteCollege()">
+                                Delete College
                         </button>
                     </div>
                 </form>
@@ -224,7 +224,6 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                                 <option value="sports">Sports</option>
                                 <option value="academic">Academic</option>
                                 <option value="cultural">Cultural</option>
-                                <option value="esport">eSport</option>
                             </select>
                         </div>
                         <div class="col-6">
@@ -278,8 +277,10 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                             Save Event
                         </button>
 
-                        <button type="button" id="deleteEventBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2 onclick="deleteEvent>
-                            Delete Event
+                            <button type="button" id="deleteEventBtn"
+                                class="btn btn-outline-danger w-100 btn-modern fw-bold py-2"
+                                onclick="deleteEvent()">
+                                Delete Event
                         </button>
                     </div>
                 </form>

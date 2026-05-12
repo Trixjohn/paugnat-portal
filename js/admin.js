@@ -31,18 +31,26 @@ function attachCollegeFormListener() {
     if (collegeForm) {
         collegeForm.addEventListener("submit", function (e) {
             e.preventDefault();
-            handleUpdatePoints();
+            saveCollege();
         });
     }
 }
 
 function attachCollegeSelectListener() {
-
     const collegeSelect = document.getElementById("collegeSelect");
 
     if (collegeSelect) {
         collegeSelect.addEventListener("change", function () {
-            populateCollegeFields(this.value);
+            const selectedId = this.value;
+
+            if (!selectedId) {
+                document.getElementById("collegeForm").reset();
+                document.getElementById("collegeSubmitBtnText").textContent = "Add College";
+                return;
+            }
+
+            populateCollegeFields(selectedId);
+            document.getElementById("collegeSubmitBtnText").textContent = "Update College";
         });
     }
 }
@@ -241,47 +249,48 @@ function populateEventFields(selectedEventId) {
 
 // ─── Action Handlers ──────────────────────────────────────────────────────────
 
-function handleUpdatePoints() {
+function saveCollege() {
+    const form = document.getElementById("collegeForm");
     const messageDiv = document.getElementById("collegeMessage");
-    const selectedCollegeId = document.getElementById("collegeSelect").value;
-    const pointsInput = document.getElementById("collegePoints");
 
-    const pointsValue = pointsInput.value.trim();
+    const formData = new FormData(form);
 
-    if (!selectedCollegeId) {
-        showFeedback(messageDiv, false, "Please select a college before updating points.");
-        return;
+    const collegeId = document.getElementById("collegeSelect").value;
+
+    const isCreateMode = collegeId === "";
+
+    /**
+     * If updating, attach ID
+     */
+    if (!isCreateMode) {
+        formData.append("id", collegeId);
     }
 
-    if (pointsValue === "" || isNaN(Number(pointsValue))) {
-        showFeedback(messageDiv, false, "Please enter a valid number for points.");
-        return;
-    }
+    /**
+     * Choose correct backend endpoint
+     */
+    const url = isCreateMode
+        ? "../backend/createCollege.php"
+        : "../backend/updateCollege.php";
 
-    const formData = new FormData();
-    formData.append("id", selectedCollegeId);
-    formData.append("points", pointsValue);
-
-    fetch("../backend/updatePoints.php", {
+    fetch(url, {
         method: "POST",
         body: formData
     })
-    .then(function (response) {
-        if (!response.ok) throw new Error("Network error: " + response.status);
-        return response.json();
-    })
-    .then(function (responseData) {
-        showFeedback(messageDiv, responseData.success, responseData.message);
+    .then(res => res.json())
+    .then(data => {
 
-        if (responseData.success) {
-            document.getElementById("collegeForm").reset();
+        showFeedback(messageDiv, data.success, data.message);
+
+        if (data.success) {
+            form.reset();
+            document.getElementById("collegeSelect").value = "";
             loadColleges();
-            setTimeout(function () { location.reload(); }, 1500);
         }
     })
-    .catch(function (fetchError) {
-        console.error("Error updating points:", fetchError);
-        showFeedback(messageDiv, false, "An error occurred while updating points. Please try again.");
+    .catch(err => {
+        console.error(err);
+        showFeedback(messageDiv, false, "Server error occurred.");
     });
 }
 
@@ -379,4 +388,38 @@ function deleteEvent() {
 function showFeedback(containerElement, isSuccess, feedbackMessage) {
     const alertClass = isSuccess ? "alert-success" : "alert-danger";
     containerElement.innerHTML = `<div class="alert ${alertClass} mt-3">${feedbackMessage}</div>`;
+}
+
+function deleteCollege() {
+    const messageDiv = document.getElementById("collegeMessage");
+    const collegeId = document.getElementById("collegeSelect").value;
+
+    if (!collegeId) {
+        showFeedback(messageDiv, false, "Please select a college first.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this college?")) return;
+
+    const formData = new FormData();
+    formData.append("id", collegeId);
+
+    fetch("../backend/deleteCollege.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        showFeedback(messageDiv, data.success, data.message);
+
+        if (data.success) {
+            document.getElementById("collegeForm").reset();
+            document.getElementById("collegeSelect").value = "";
+            loadColleges();
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showFeedback(messageDiv, false, "Server error occurred.");
+    });
 }

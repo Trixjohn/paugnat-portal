@@ -69,24 +69,136 @@ class Colleges
      * @param int $points Points to add
      * @return bool True if update successful
      */
-    public function updatePoints($id, $points)
+    public function createCollege($data)
     {
-        // Prepared statement to safely update points
+        /**
+         * Prepare INSERT statement for creating a new college record
+         * All fields from the colleges table are included
+         */
         $stmt = $this->db->prepare("
-            UPDATE colleges
-            SET points = points + ?
-            WHERE id = ?
+            INSERT INTO colleges
+            (name, code, description, deanName, email, phone, building, establishedYear, points, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        $stmt->bind_param("ii", $points, $id);
+        /**
+         * Bind parameters to prevent SQL injection
+         * "s" = string, "i" = integer, "d" = double (not used here but kept standard)
+         */
+        $stmt->bind_param(
+            "ssssssssds",
+            $data['name'],
+            $data['code'],
+            $data['description'],
+            $data['deanName'],
+            $data['email'],
+            $data['phone'],
+            $data['building'],
+            $data['establishedYear'],
+            $data['points'],
+            $data['status']
+        );
 
-        // Execute update query
+        /**
+         * Execute query
+         * Returns TRUE if successful, FALSE if failed
+         */
         $result = $stmt->execute();
 
+        /**
+         * Close statement to free memory
+         */
         $stmt->close();
 
         return $result;
     }
+
+
+        public function updateCollege($id, $data)
+    {
+        /**
+         * Prepare UPDATE statement for full college record update
+         * Updates ALL fields except ID
+         */
+        $stmt = $this->db->prepare("
+            UPDATE colleges
+            SET name = ?, 
+                code = ?, 
+                description = ?, 
+                deanName = ?, 
+                email = ?, 
+                phone = ?, 
+                building = ?, 
+                establishedYear = ?, 
+                points = ?, 
+                status = ?
+            WHERE id = ?
+        ");
+
+        /**
+         * Bind parameters in correct order
+         * NOTE: last parameter is ID (integer)
+         */
+        $stmt->bind_param(
+            "ssssssssisi",
+            $data['name'],
+            $data['code'],
+            $data['description'],
+            $data['deanName'],
+            $data['email'],
+            $data['phone'],
+            $data['building'],
+            $data['establishedYear'],
+            $data['points'],
+            $data['status'],
+            $id
+        );
+
+        /**
+         * Execute update query
+         */
+        $result = $stmt->execute();
+
+        /**
+         * Close statement
+         */
+        $stmt->close();
+
+        return $result;
+    }
+
+        public function deleteCollege($id)
+    {
+        /**
+         * Prepare DELETE query
+         * Removes a college permanently using ID
+         */
+        $stmt = $this->db->prepare("
+            DELETE FROM colleges
+            WHERE id = ?
+        ");
+
+        /**
+         * Bind ID parameter
+         */
+        $stmt->bind_param("i", $id);
+
+        /**
+         * Execute query
+         */
+        $result = $stmt->execute();
+
+        /**
+         * Close statement
+         */
+        $stmt->close();
+
+        return $result;
+    }
+
+       
 }
 
 ?>
+
+

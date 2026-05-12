@@ -131,6 +131,10 @@ class Events
         // Execute query
         $stmt->execute();
 
+        if ($stmt->error) {
+                die($stmt->error);
+        }
+
         // Get correct event ID
         $eventId = $id > 0 ? $id : $this->db->insert_id;
 
