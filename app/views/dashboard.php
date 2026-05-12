@@ -46,7 +46,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
     <title>PAUGNAT Admin Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css?v=1.1">
+    <link rel="stylesheet" href="../css/style.css?v=1.2">
 </head>
 
 <body class="admin-dashboard">
@@ -178,7 +178,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-warning text-dark w-100 btn-modern fw-bold py-2 shadow-sm">
-                            <span id="collegeSubmitBtnText">Add College</span>
+                            <span id="collegeSubmitBtnText">Save College</span>
                         </button>
 
                         <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2">
@@ -298,7 +298,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                 <div class="table-responsive">
                     <table class="table table-borderless table-hover text-light align-middle">
                         <thead>
-                            <tr class="text-secondary small text-uppercase border-bottom border-secondary text-dark">
+                            <tr class="text-secondary small text-uppercase border-bottom border-secondary">
                                 <th>#</th>
                                 <th>College</th>
                                 <th class="text-end">Points</th>
