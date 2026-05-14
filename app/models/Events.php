@@ -38,8 +38,7 @@ class Events
                 endTime,
                 location,
                 status,
-                maxParticipants,
-                imagePath
+                maxParticipants
             FROM events 
             ORDER BY eventDate ASC
         ");
@@ -74,8 +73,7 @@ class Events
         $endTime,
         $location,
         $status,
-        $maxParticipants,
-        $imagePath
+        $maxParticipants
     ) {
 
         if ($id > 0) {
@@ -85,12 +83,12 @@ class Events
                 UPDATE events 
                 SET eventName = ?, description = ?, eventType = ?, eventDate = ?, 
                     startTime = ?, endTime = ?, location = ?, status = ?, 
-                    maxParticipants = ?, imagePath = ?
+                    maxParticipants = ?
                 WHERE id = ?
             ");
 
             $stmt->bind_param(
-                "ssssssssisi",
+                "sssssssssii",
                 $name,
                 $description,
                 $type,
@@ -100,7 +98,6 @@ class Events
                 $location,
                 $status,
                 $maxParticipants,
-                $imagePath,
                 $id
             );
 
@@ -109,12 +106,12 @@ class Events
             // INSERT new event
             $stmt = $this->db->prepare("
                 INSERT INTO events 
-                (eventName, description, eventType, eventDate, startTime, endTime, location, status, maxParticipants, imagePath)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (eventName, description, eventType, eventDate, startTime, endTime, location, status, maxParticipants)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $stmt->bind_param(
-                "ssssssssis",
+                "ssssssssi",
                 $name,
                 $description,
                 $type,
@@ -123,8 +120,7 @@ class Events
                 $endTime,
                 $location,
                 $status,
-                $maxParticipants,
-                $imagePath
+                $maxParticipants
             );
         }
 
@@ -143,6 +139,20 @@ class Events
         return $eventId;
     }
 
+        public function saveEventImage($eventId, $imagePath)
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO eventImages (eventId, imagePath)
+            VALUES (?, ?)
+        ");
+
+        $stmt->bind_param("is", $eventId, $imagePath);
+
+        $stmt->execute();
+
+        $stmt->close();
+    }
+
     /**
      * Delete event and its related images
      *
@@ -152,7 +162,7 @@ class Events
     public function deleteEvent($id)
     {
         // Remove event images first
-        $stmt = $this->db->prepare("DELETE FROM eventimages WHERE eventId = ?");
+        $stmt = $this->db->prepare("DELETE FROM eventImages WHERE eventId = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->close();

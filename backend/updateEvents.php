@@ -118,6 +118,14 @@ $eventId = $events->saveEvent(
 );
 
 /**
+ * Insert new image to eventImage table
+ */
+
+if (!empty($imagePath)) {
+    $events->saveEventImage($eventId, $imagePath);
+}
+
+/**
  * Return success response
  */
 echo json_encode([
