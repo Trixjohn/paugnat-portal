@@ -178,11 +178,15 @@ body::before {
 .admin-dashboard .table {
     color: #f8f9fa;
     background: transparent !important;
+    --bs-table-color: #f8f9fa;
+    --bs-table-bg: transparent;
+    --bs-table-hover-color: #f8f9fa;
 }
 
 .admin-dashboard .table th,
 .admin-dashboard .table td {
     border-color: rgba(255, 255, 255, 0.08);
+    background-color: transparent !important;
 }
 
 /* ─── Form Validation Feedback ───────────────────────────────────────────── */
