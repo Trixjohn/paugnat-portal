@@ -130,7 +130,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label class="form-label text-light fw-bold small text-uppercase opacity-75">College Name</label>
-                            <input type="text" name="college_name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="e.g. College of Engineering" required>
+                            <input type="text" name="name" id="collegeName" class="form-control bg-dark text-white border-secondary" placeholder="e.g. College of Engineering" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label text-light fw-bold small text-uppercase opacity-75">Code</label>
@@ -181,11 +181,12 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                             <span id="collegeSubmitBtnText">Save College</span>
                         </button>
 
-                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2">
-                            Delete College
+                        <button type="button" id="deleteCollegeBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2" onclick="deleteCollege()">
+                                Delete College
                         </button>
                     </div>
                 </form>
+
 
                 <div id="collegeMessage" class="mt-3"></div>
             </div>
@@ -208,7 +209,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold">Event Name</label>
-                        <input type="text" name="event_name" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
+                        <input type="text" name="eventName" id="eventName" class="form-control bg-dark text-white border-secondary" placeholder="Event title" required>
                     </div>
 
                     <div class="mb-3">
@@ -223,7 +224,6 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                                 <option value="sports">Sports</option>
                                 <option value="academic">Academic</option>
                                 <option value="cultural">Cultural</option>
-                                <option value="esport">eSport</option>
                             </select>
                         </div>
                         <div class="col-6">
@@ -239,7 +239,7 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
 
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold">Event Date</label>
-                        <input type="date" name="event_date" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
+                        <input type="date" name="eventDate" id="eventDate" class="form-control bg-dark text-white border-secondary" required>
                     </div>
 
                     <div class="row g-2 mb-3">
@@ -269,16 +269,18 @@ $adminName = $_SESSION["admin_username"] ?? "Admin";
                         <div id="eventImagePreview" class="mb-2 d-none">
                             <img src="" alt="Event Image" class="img-thumbnail bg-dark border-secondary" style="max-height: 150px;">
                         </div>
-                        <input type="file" name="event_image" id="eventImage" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                        <input type="file" name="eventImage" id="eventImage" class="form-control bg-dark text-white border-secondary" accept="image/*">
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-warning text-dark w-100 btn-modern fw-bold py-2">
+                        <button type="button" onclick="handleSaveEvent(event)" class="btn btn-info text-dark w-100 btn-modern fw-bold py-2">
                             Save Event
                         </button>
 
-                        <button type="button" id="deleteEventBtn" class="btn btn-outline-danger w-100 btn-modern fw-bold py-2 onclick="deleteEvent>
-                            Delete Event
+                            <button type="button" id="deleteEventBtn"
+                                class="btn btn-outline-danger w-100 btn-modern fw-bold py-2"
+                                onclick="deleteEvent()">
+                                Delete Event
                         </button>
                     </div>
                 </form>
